@@ -1,12 +1,6 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-
-import NavBar from './components/NavBar.vue';
-</script>
-
 <template>
   <header class="header">
-        <h1>Rogue Protocol Analytics</h1>
+        <h1>Names Are Hard Studio</h1>
   </header>
 
   <div class="row">
@@ -18,10 +12,15 @@ import NavBar from './components/NavBar.vue';
   </div>
 
   <footer class="footer">
-    <img alt="KHlogo" src="@/assets/kill_history.png" width="150" height="70" />
-    <p>Copyright © 2024 - Alex Buzmion II</p>
+    <img alt="NAHlogo" src="./assets/NahLogo.png" width="150" height="70" />
+    <p>Copyright © 2024 - Names Are Hard Studio</p>
   </footer>
 </template>
+
+<script setup>
+
+import NavBar from './components/NavBar.vue';
+</script>
 
 <style>
 * {
@@ -29,7 +28,7 @@ import NavBar from './components/NavBar.vue';
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 /* Style the header */
