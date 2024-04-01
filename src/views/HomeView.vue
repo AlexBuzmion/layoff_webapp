@@ -7,8 +7,10 @@
     
   </header>
   <main>
-    Welcome to our teams first highly anticipated game. <br>
-    This Marks the beginning 
+    <div style="margin: 5%;">
+      We are great at what we do, but we can’t decide on titles, coz, you know..<br>
+      names, are.. hard.
+    </div>
     
   </main>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-        <h1>Names Are Hard Studio</h1>
+        <h1>NAH Studio</h1>
   </header>
 
   <div class="row">
@@ -12,8 +12,8 @@
   </div>
 
   <footer class="footer">
-    <img alt="NAHlogo" src="./assets/NahLogo.png" width="150" height="70" />
-    <p>Copyright © 2024 - Names Are Hard Studio</p>
+    <img alt="NAHlogo" src="./assets/NahLogo.png" width="20%" height="10%" />
+    <p>Copyright © 2024 - NamesAreHard Studio</p>
   </footer>
 </template>
 
@@ -33,9 +33,10 @@ body {
 
 /* Style the header */
 .header {
-  padding: 10px;
+  padding: 10;
   text-align: center;
-  font-size: 30px;
+  font-size: 150%;
+  
 }
 
 /* Container for flexboxes */
