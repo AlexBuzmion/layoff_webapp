@@ -1,0 +1,31 @@
+Product Name: Data Analytics App
+How to get started: 
+clone the repo: https://github.com/vfs-sct/a1-3-telemetry-system-PG25Alex
+
+- checkout thr branch named "Assignment3" from the repo
+- open VSCode and open the folder of the repo in your local drive
+- open a terminal in vscode (ctrl + `) and paste this `npm run dev` 
+or look for the NPM scripts and click the play button for dev. 
+- once successful the console will give the link to the local website. 
+
+How to use the app: 
+Move between Home > Charts > About to check out the different pages. There are no interactables in Home and About. 
+For Charts:
+Start by Selecting a player from the dropdown. 
+You can change the player as well by typing in the PlayerID field. Values taken starts with 00X-0XX. 
+Vue will then load the chart data. 
+You can also modify the fields from Death Position to Assists and hitting submit to save the data. 
+Note: you will need to change from one player to another for the charts to update the data you submitted. 
+The ScatterChart/HeatMap are all static data. 
+
+Viewing Charts:
+
+Radar Charts: Navigate to the Radar Chart section to view player statistics in a radar chart format. The RadarChartGroup.vue allows for the comparison of multiple players' stats side by side.
+Doughnut Charts: Select the Doughnut Chart option to see game statistics represented in a doughnut chart format (DoughnutChart.vue). This visualization helps in understanding the proportion of different statistics.
+Scatter Charts: For a detailed analysis of player movements or other game metrics, access the Scatter Chart (ScatterChart.vue). It provides a granular look at the data points.
+Horizontal Bar Charts: Use the Horizontal Bar Chart (HorizontalBarChart.vue) to compare different statistics across players or game sessions horizontally.
+Interacting with Charts: The charts are interactive. Hover over different segments or points to see detailed statistics. Some charts may allow you to filter or select specific data sets for a customized view.
+
+Chart Controls: Utilize the Chart Controller (ChartController.vue) to adjust the data you wish to view or compare. This feature lets you dynamically change the datasets visible on the charts.
+
+Charts View: The ChartsView.vue component serves as a container for all chart-related views. Navigate through this section to explore comprehensive game analytics presented through various chart types.

@@ -1,0 +1,14 @@
+Product Name: Data Analytics App
+How to get started: 
+- Download the latest branch named "Assignment2"
+- open VSCode and open the folder of the repo in your local drive
+- open a terminal in vscode (ctrl + `) and paste this `$npm run dev` 
+or look for the NPM scripts and click the play button for dev. 
+- once successful the console will give the link to the local website. 
+
+How to read/modify the files: 
+The web app is laid out in a burger layout bun-meat-bun. Where the buns are the header and footer, and the meat is a 3 column split between the Navigation bar, the RouterView and the filters/Chart controller. 
+
+The edges of the Nav bar is maintained and can be modified in NavBar.vue and index.js under the router folder. 
+
+The ChartsView.vue is responsible for the charts displayed in the the middle of the meat section. Add new chart components as needed and feed them into the Chartsview.vue (ensure that you add a flex css style to the chart) 
