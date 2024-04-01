@@ -18,7 +18,7 @@ import NavBar from './components/NavBar.vue';
   </div>
 
   <footer class="footer">
-    <img alt="KHlogo" src="assets/kill_history.png" width="150" height="70" />
+    <img alt="NAHlogo" src="/assets/NahLogo.png" width="150" height="70" />
     <p>Copyright © 2024 - Alex Buzmion II</p>
   </footer>
 </template>
