@@ -9,6 +9,7 @@
   
   <div class="row"> 
     <RouterView class="column middle"/>
+    
   </div>
 
   <footer class="footer">
@@ -20,9 +21,11 @@
 <script setup>
 
 import NavBar from './components/NavBar.vue';
-</script>
 
-<style>
+
+</script>
+  
+<style scoped>
 * {
   box-sizing: border-box;
 }

@@ -5,9 +5,14 @@
         <div class="navbar">
             <nav>
                 <ul>
+                    
                     <li v-for="(item, i) in navMenu" :key="i">
                         <RouterLink :to="item.path" class="column">{{ item.section }}</RouterLink>
-                    </li>                   
+                        
+                    </li>    
+                    <GoogleLogin :callback="callback" ></GoogleLogin>
+                    <div style="align-items: right;">
+                    </div>
                 </ul>
             </nav>
         </div>
@@ -17,31 +22,51 @@
 </template>
 
 <script setup>
+    
     import { RouterLink } from 'vue-router'
     
     const navMenu = [
-        { path: "/", section:"Home"}, 
-        { path: "/charts", section:"Charts"}, 
-        { path: "/about", section:"About"},
-        
+        { path: "/", section:"Home", }, 
+        { path: "/charts", section:"Data", }, 
+        { path: "/about", section:"About", },
+        { path: "/remote-config", section:"Remote Config",}
     ];
+
+    const callback = (response) => {
+        // This callback will be triggered when the user selects or login to
+        // his Google account from the popup
+        console.log("Handle the response", response)
+    }
+
+    
 </script>
 
 <style scoped>
-.nav {
-    background: var(--medium); 
+.wrapper .navbar nav {
+    display: flex;
+    justify-content: space-between; /* This will push the menu and the button to opposite ends */
+    align-items: center; /* This will vertically center-align the items */
+    background: var(--medium);
     font-weight: 700;
 }
 
 ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Display list items in a row */
 }
 
 li {
-  display: inline;
+    font-size: 80%; /* Add some space between the navigation items */
+}
+
+li:last-child {
+    margin-right: 0; /* Remove margin from the last item */
+}
+
+.GoogleLogin {
+    margin-left: auto; /* This will push the GoogleLogin button to the far right */
 }
 
 </style>
