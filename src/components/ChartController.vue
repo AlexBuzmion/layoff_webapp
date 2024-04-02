@@ -20,13 +20,6 @@
                 <label for="PID" class="spacer">PlayerID:
                     <input id="PID" v-model="selectedPlayerID">
                 </label>
-                <label for="deathPos" class="spacer">Death Position</label>
-                <label for="deathPosX" class="spacer">| X: 
-                    <input id="deathPosX" v-model="DeathPosX" placeholder="N/A">
-                </label>
-                <label for="deathPosY" class="spacer">Y: 
-                    <input name="deathPosY" v-model="DeathPosY" placeholder="N/A">  |
-                </label>
                 <label for="wins" class="spacer">Wins: 
                     <input name="wins" v-model="Wins" placeholder="N/A">
                 </label>
@@ -43,8 +36,23 @@
                 <label for="deaths" class="spacer">Deaths: 
                     <input name="deaths" v-model="Deaths" placeholder="N/A">
                 </label>
-                <label for="assists" class="spacer">Assists: 
-                    <input name="assists" v-model="Assists" placeholder="N/A">
+                <label for="Placed" class="spacer">Traps Placed: 
+                    <input name="Placed" v-model="Assists" placeholder="N/A">
+                </label>
+                <label for="TrapKills" class="spacer">Trap Kills: 
+                    <input name="TrapKills" v-model="Assists" placeholder="N/A">
+                </label>
+                <label for="BBKills" class="spacer"> Bouncing Betty Kills: 
+                    <input name="BBKills" v-model="Assists" placeholder="N/A">
+                </label>
+                <label for="PDKills" class="spacer"> Poison Dart Kills: 
+                    <input name="PDKills" v-model="Assists" placeholder="N/A">
+                </label>
+                <label for="DPKills" class="spacer"> Doom Puff Kills: 
+                    <input name="DPKills" v-model="Assists" placeholder="N/A">
+                </label>
+                <label for="SSKills" class="spacer"> Skyfall Snare Kills: 
+                    <input name="SSKills" v-model="Assists" placeholder="N/A">
                 </label>
                 
 
@@ -60,7 +68,7 @@
 </template>
 
 <script setup>
-    import { ref, computed} from 'vue'
+    import { computed} from 'vue'
     import { usePlayerInfo } from '@/stores/playerIDinfo';
 
     const playerData = usePlayerInfo();
@@ -163,7 +171,7 @@
 
 .spacer {
     font-size: 15px;
-    padding-left: 20px; 
+    padding-left: 10px; 
 }
 
 input {

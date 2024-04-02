@@ -13,7 +13,9 @@
         </p>
 
       <br>
-      <h3><u>The Team</u></h3>
+      <h3><u>The Team</u></h3><br/>
+      <p>We will all influence the design and may all contribute individual assets, but everyone owns some piece of the project and is responsible for maintaining the quality under their purview.
+</p><br/>
       <ul>
         <li><b>Alex Buzmion</b> <em>- Programmer </em></li>  
         <li><b>Bryan Wu</b> <em>- 3D Character Artist </em></li>  

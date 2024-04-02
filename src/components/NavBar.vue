@@ -27,7 +27,7 @@
     
     const navMenu = [
         { path: "/", section:"Home", }, 
-        { path: "/charts", section:"Data", }, 
+        { path: "/charts", section:"Player Data", }, 
         { path: "/about", section:"About", },
         { path: "/remote-config", section:"Remote Config",}
     ];
@@ -58,7 +58,9 @@ ul {
 }
 
 li {
-    font-size: 80%; /* Add some space between the navigation items */
+    font-size: 22px; /* Add some space between the navigation items */
+    padding: 5px;
+    margin: 5px;
 }
 
 li:last-child {

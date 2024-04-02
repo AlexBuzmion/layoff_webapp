@@ -13,7 +13,7 @@
   </div>
 
   <footer class="footer">
-    <img alt="NAHlogo" src="./assets/NahLogo.png" width="20%" height="10%" />
+    <img alt="NAHlogo" src="./assets/NahLogo.png" width="5%" height="4%" />
     <p>Copyright © 2024 - NamesAreHard Studio</p>
   </footer>
 </template>

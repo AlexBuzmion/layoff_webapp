@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AboutViewVue from '@/views/AboutView.vue'
 import ChartsViewVue from '@/views/ChartsView.vue'
-import RemoteConfigViewVue from '@/views/RemoteConfigView.vue'
+import RemoteConfigurationsVue from '@/views/RemoteConfigurations.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,7 +26,7 @@ const router = createRouter({
     {
       path: '/remote-config',
       name: 'Remote Config',
-      component: RemoteConfigViewVue, 
+      component: RemoteConfigurationsVue, 
     },
   ]
 })

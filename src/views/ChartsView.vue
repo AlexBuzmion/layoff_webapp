@@ -2,22 +2,34 @@
     
     <div class="chart-info">
       <ChartController class="column side"></ChartController>
-        <h1>Wins/Losses</h1>
+      <h1>Wins/Losses</h1>
+      <HorizontalBarChart class="horizontal-bar-chart" barChartDataKey="pGetKDA"/>
         <div class="row">
-          <HorizontalBarChart class="horizontal-bar-chart" barChartDataKey="pGetKDA"/>
           <div class="column side big">
-            <h1>Shot Accuracy</h1>
-            <h1 style="font-size: 6vw;">{{playerData.pShotAcc}}</h1>
+              <h1 class="row">Win Rate</h1>
+              <h1 style="font-size: 6vw;">{{playerData.pShotAcc}}</h1>
           </div>
-        </div>
+          <div class="column side big">
+              <h1 class="row">Trap Kills Rate</h1>
+              <h1 style="font-size: 6vw;">{{playerData.pShotAcc}}</h1>
+          </div>
+          <div class="column side big">
+              <h1 class="row">Killed by Own</h1>
+              <h1 style="font-size: 6vw;">{{playerData.pShotAcc}}</h1>
+          </div>
+          <div class="column side big">
+              <h1 class="row">Gun Kills</h1>
+              <h1 style="font-size: 6vw;">{{playerData.pShotAcc}}</h1>
+          </div>
+        </div><br/>
         <h1>Player Stats</h1>
-        <div class="row">
+        <div class="">
           <RadarChartGroup></RadarChartGroup>
-        </div>
+        </div><br/>
         <div class="row">
           <DoughnutChart donutChartDataKey="pGetGameModes"></DoughnutChart>
           <DoughnutChart donutChartDataKey="pGetGameModes"></DoughnutChart>
-        </div>
+        </div><br/>
         <div>
           <ScatterChart class="background-image"></ScatterChart>
         </div>
@@ -67,5 +79,16 @@ import {computed} from 'vue'
   margin-left: 0%;
 }
 
+.column.side {
+  font-size: 25px;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 0 0 20%;
+}
+
+.row {
+  display: -webkit-flex;
+  display: flex;
+}
 
 </style>
