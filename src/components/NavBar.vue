@@ -5,11 +5,10 @@
         <div class="navbar">
             <nav>
                 <ul>
-                    
-                    <li v-for="(item, i) in navMenu" :key="i">
+                    <li v-for="(item, i) in filteredNavMenu" :key="i">
                         <RouterLink :to="item.path" class="column">{{ item.section }}</RouterLink>
-                        
-                    </li>    
+                    </li>   
+
                     <GoogleLogin :callback="callback" ></GoogleLogin>
                     <div style="align-items: right;">
                     </div>
@@ -22,21 +21,37 @@
 </template>
 
 <script setup>
-    
+    import { computed} from 'vue'
     import { RouterLink } from 'vue-router'
-    
-    const navMenu = [
+    import { useAuthStore } from '@/stores/auth'
+
+    const authStore = useAuthStore();
+
+    const navMenuLoggedin = [
         { path: "/", section:"Home", }, 
         { path: "/charts", section:"Player Data", }, 
         { path: "/about", section:"About", },
         { path: "/remote-config", section:"Remote Config",}
     ];
 
+    const navMenuNotLoggedIn = [
+        { path: "/", section:"Home", }, 
+        { path: "/about", section:"About", },
+    ];
+
+    const filteredNavMenu = computed(() => {
+        // Only show the full nav menu if the user is logged in
+        if (!authStore.isLoggedIn) {
+            return navMenuNotLoggedIn;
+        }
+        return navMenuLoggedin;
+
+    });
     const callback = (response) => {
-        // This callback will be triggered when the user selects or login to
-        // his Google account from the popup
-        console.log("Handle the response", response)
+    if (response && response.success) {
+        authStore.setUserDetails(response.user);
     }
+};
 
     
 </script>

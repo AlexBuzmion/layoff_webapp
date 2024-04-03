@@ -68,14 +68,11 @@
 </template>
 
 <script setup>
-    import { computed} from 'vue'
+    import { ref, computed } from 'vue'
     import { usePlayerInfo } from '@/stores/playerIDinfo';
 
     const playerData = usePlayerInfo();
 
-    // these are the variables to programmatically instantiate input and labels in the DOM
-    // const statKeys = ref(['ID', 'Name', 'DeathPosX','DeathPosY', 'matchID','Wins', 'Losses','Draws', 'GameMode','Kills', 'Assists','Deaths', 'ShotAccuracy',])
-    
     const selectedPlayerID = computed({
         get: () => playerData.selectedPID || '',
         set: (valueX) => {

@@ -2,29 +2,30 @@
     
     <div>
         <h2>Client Configurations</h2>
-          <label for="Env" class="spacer">Environment:
-            <input id="Env" v-model="selectedPlayerID" placeholder="N/A">
-          </label><br/>
+        <label for="Env" class="spacer">Environment:</label>
+          <select id="Env" class="spacer">
+              <option v-for="env in environmentId" :key="env.key" :value="env.key">{{ env.name }}</option>
+          </select><br/>
           <label for="Version" class="spacer">Client Version:
-            <input id="Version" v-model="selectedPlayerID" placeholder="N/A">
+            <input id="Version" placeholder="N/A">
           </label><br/>
           <label for="Debug" class="spacer">Debug Mode:
-            <input id="Debug" v-model="selectedPlayerID" placeholder="N/A">
+            <input id="Debug" placeholder="N/A">
           </label><br/><br/>
         
           <h2>Player Configurations</h2>
         <div class="">
           <label for="MS" class="spacer">Movement Speed:
-            <input id="MS" v-model="selectedPlayerID" placeholder="N/A">
+            <input id="MS" placeholder="N/A">
           </label><br/>
             <label for="deathPosX" class="spacer">Dash Speed: 
-                <input id="deathPosX" v-model="DeathPosX" placeholder="N/A">
+                <input id="deathPosX" placeholder="N/A">
             </label><br/>
             <label for="deathPosY" class="spacer">Jump Height: 
-                <input name="deathPosY" v-model="DeathPosY" placeholder="N/A">
+                <input name="deathPosY" placeholder="N/A">
             </label><br/>
             <label for="wins" class="spacer">Trap Setting Speed: 
-                <input name="wins" v-model="Wins" placeholder="N/A">
+                <input name="wins" placeholder="N/A">
             </label><br/>            
         </div><br/>
         
@@ -39,41 +40,47 @@
           <option value="Trap7">Trap 7</option>
         </select><br/>
         <label for="Enabled" class="spacer">Enabled in Game: 
-          <input name="Enabled" v-model="Assists" placeholder="N/A">
+          <input name="Enabled" placeholder="N/A">
         </label><br/>
         <label for="Damage" class="spacer">Damage: 
-          <input name="Damage" v-model="Assists" placeholder="N/A">
+          <input name="Damage" placeholder="N/A">
         </label><br/>
         <label for="Range" class="spacer">Effective Range: 
-          <input name="Range" v-model="Assists" placeholder="N/A">
+          <input name="Range" placeholder="N/A">
         </label><br/>
         <label for="Range" class="spacer">Setting Range: 
-          <input name="Range" v-model="Assists" placeholder="N/A">
+          <input name="Range" placeholder="N/A">
         </label><br/>
         <label for="DSpeed" class="spacer">Detonate Speed: 
-          <input name="DSpeed" v-model="Assists" placeholder="N/A">
+          <input name="DSpeed" placeholder="N/A">
         </label><br/><br/>
         
         <h2>Game Configurations</h2>
         <label for="TrapSS" class="spacer">Trap Spawn Speed: 
-          <input name="TrapSS" v-model="Losses" placeholder="N/A">
+          <input name="TrapSS" placeholder="N/A">
         </label><br/>
         <label for="RoomSize" class="spacer">Room Size: 
-            <input name="RoomSize" v-model="Draws" placeholder="N/A">
+            <input name="RoomSize" placeholder="N/A">
         </label><br/>
         <label for="RoomQty" class="spacer">Number of Rooms: 
-            <input name="RoomQty" v-model="Kills" placeholder="N/A">
+            <input name="RoomQty" placeholder="N/A">
         </label><br/>
         <label for="deaths" class="spacer">Deaths: 
-            <input name="deaths" v-model="Deaths" placeholder="N/A">
+            <input name="deaths" placeholder="N/A">
         </label>
       </div>
   </template>
   
   <script setup>
-  
+  import { ref } from 'vue';
+     const environmentId = ref([
+        { key: '1edec44a-f358-49fb-93b5-4ebb715ceb2f', name: 'development' },
+        { key: 'e187716c-9fdf-41bc-9ff7-696c6a679222', name: 'production' },
+        { key: '9cab7b88-1cb6-4017-a4ce-67a0a219b463', name: 'demo' },
+    ]);
   </script>
   
+
   <style scoped>
   @media (max-width: 1024px ) {
     .about {
