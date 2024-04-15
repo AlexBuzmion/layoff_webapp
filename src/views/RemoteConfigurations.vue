@@ -1,4 +1,4 @@
-<template>
+<template v-if="mappedConfigs['CharacterSettings']">
     
     <div>
         <h2>Client Configurations</h2>
@@ -74,23 +74,28 @@
   <script setup>
     import { useRemoteConfigStore } from '@/stores/remoteConfigData';
     import { onMounted, ref, computed} from 'vue'
-
+    
     const store = useRemoteConfigStore()
     const projectId = import.meta.env.VITE_PROJECT_ID
     const selectedEnvironment = ref('')
+    const environmentNames = computed(() => store.environmentNames)
+    const mappedConfigs = computed(() => store.configs)
     
     async function retrieveEnvConfigs() {
       await store.fetchConfigsForEnvironment(selectedEnvironment.value);
     }
 
+    const configs = computed(() => store.configs);
+
     onMounted(async () => {
-      await store.fetchEnvironmentNames().value;
+      await store.fetchEnvironmentNames();
+      if (store.environmentNames.length > 0) {
+        const defaultEnvId = store.environmentNames[0].id;
+        await store.fetchConfigsForEnvironment(defaultEnvId);
+      }
     });
-    
-    
   </script>
   
-
   <style scoped>
   @media (max-width: 1024px ) {
     .about {
