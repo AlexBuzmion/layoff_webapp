@@ -1,16 +1,16 @@
-<template>
+<template v-if="mappedConfigs['CharacterSettings']">
     
     <div>
         <h2>Client Configurations</h2>
-        <label for="Env" class="spacer">Environment:</label>
-          <select id="Env" class="spacer">
-              <option v-for="env in environmentId" :key="env.key" :value="env.key">{{ env.name }}</option>
-          </select><br/>
+        <label for="Env" class="spacer">Environment: </label>
+            <select v-model="selectedEnvironment" id="Env" class="spacer"> 
+              <option v-for="env in environmentNames" :key="env.name" :value="env.id">{{ env.name }}</option> 
+            </select> <button :disabled="!selectedEnvironment" @click="retrieveEnvConfigs" style="margin-left: 50px;">Retrieve Configs</button><br/>
           <label for="Version" class="spacer">Client Version:
-            <input id="Version" placeholder="N/A">
+            <input id="Version" disabled placeholder="N/A">
           </label><br/>
           <label for="Debug" class="spacer">Debug Mode:
-            <input id="Debug" placeholder="N/A">
+            <input id="Debug" disabled placeholder="N/A">
           </label><br/><br/>
         
           <h2>Player Configurations</h2>
@@ -72,15 +72,30 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
-     const environmentId = ref([
-        { key: '1edec44a-f358-49fb-93b5-4ebb715ceb2f', name: 'development' },
-        { key: 'e187716c-9fdf-41bc-9ff7-696c6a679222', name: 'production' },
-        { key: '9cab7b88-1cb6-4017-a4ce-67a0a219b463', name: 'demo' },
-    ]);
+    import { useRemoteConfigStore } from '@/stores/remoteConfigData';
+    import { onMounted, ref, computed} from 'vue'
+    
+    const store = useRemoteConfigStore()
+    const projectId = import.meta.env.VITE_PROJECT_ID
+    const selectedEnvironment = ref('')
+    const environmentNames = computed(() => store.environmentNames)
+    const mappedConfigs = computed(() => store.configs)
+    
+    async function retrieveEnvConfigs() {
+      await store.fetchConfigsForEnvironment(selectedEnvironment.value);
+    }
+
+    const configs = computed(() => store.configs);
+
+    onMounted(async () => {
+      await store.fetchEnvironmentNames();
+      if (store.environmentNames.length > 0) {
+        const defaultEnvId = store.environmentNames[0].id;
+        await store.fetchConfigsForEnvironment(defaultEnvId);
+      }
+    });
   </script>
   
-
   <style scoped>
   @media (max-width: 1024px ) {
     .about {

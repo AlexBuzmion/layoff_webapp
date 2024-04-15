@@ -7,11 +7,8 @@
                 <ul>
                     <li v-for="(item, i) in filteredNavMenu" :key="i">
                         <RouterLink :to="item.path" class="column">{{ item.section }}</RouterLink>
+                        
                     </li>   
-
-                    <GoogleLogin :callback="callback" ></GoogleLogin>
-                    <div style="align-items: right;">
-                    </div>
                 </ul>
             </nav>
         </div>
@@ -25,23 +22,26 @@
     import { RouterLink } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
 
+
     const authStore = useAuthStore();
 
     const navMenuLoggedin = [
         { path: "/", section:"Home", }, 
         { path: "/charts", section:"Player Data", }, 
+        { path: "/remote-config", section:"Remote Config",},
         { path: "/about", section:"About", },
-        { path: "/remote-config", section:"Remote Config",}
     ];
 
     const navMenuNotLoggedIn = [
         { path: "/", section:"Home", }, 
         { path: "/about", section:"About", },
+        { path: "/login", section:"Login", },
+        
     ];
 
     const filteredNavMenu = computed(() => {
         // Only show the full nav menu if the user is logged in
-        if (!authStore.isLoggedIn) {
+        if (authStore.isLoggedIn) {
             return navMenuNotLoggedIn;
         }
         return navMenuLoggedin;

@@ -10,24 +10,30 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: HomeView
+      component: HomeView,
+      meta : {requiresAuth: false}
     },
     {
       path: '/about',
       name: 'About',
-      component: AboutViewVue
-      //component: () => import('../views/AboutView.vue') // Dynamic load function to import only when visited
+      component: AboutViewVue,
+      meta : {requiresAuth: false}
+      
     }, 
     {
       path: '/charts',
       name: 'Charts',
-      component: ChartsViewVue
+      component: ChartsViewVue,
+      meta : {requiresAuth: true}
     },
     {
       path: '/remote-config',
       name: 'Remote Config',
       component: RemoteConfigurationsVue, 
+
+      meta : {requiresAuth: true}
     },
+
   ]
 })
 

@@ -27,7 +27,12 @@ coverage
 *.sln
 *.sw?
 .env
+<<<<<<< HEAD
 *.env
 *.env*
+=======
+*.env*
+*.env
+>>>>>>> develop
 
 *.tsbuildinfo
