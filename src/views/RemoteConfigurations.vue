@@ -3,8 +3,8 @@
     <div>
         <h2>Client Configurations</h2>
         <label for="Env" class="spacer">Environment:</label>
-          <select id="Env" class="spacer">
-              <option v-for="env in environmentId" :key="env.key" :value="env.key">{{ env.name }}</option>
+          <select v-model="selectedEnvironment" id="Env" class="spacer">
+              <option v-for="env in environmentNames" :key="env.name" :value="env.id">{{ env.name }}</option>
           </select><br/>
           <label for="Version" class="spacer">Client Version:
             <input id="Version" placeholder="N/A">
@@ -72,12 +72,17 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
-     const environmentId = ref([
-        { key: '1edec44a-f358-49fb-93b5-4ebb715ceb2f', name: 'development' },
-        { key: 'e187716c-9fdf-41bc-9ff7-696c6a679222', name: 'production' },
-        { key: '9cab7b88-1cb6-4017-a4ce-67a0a219b463', name: 'demo' },
-    ]);
+    import { useRemoteConfigStore } from '@/stores/remoteConfigData';
+    import { onMounted, ref, computed} from 'vue'
+
+    const store = useRemoteConfigStore()
+    const projectId = import.meta.env.VITE_PROJECT_ID
+    const selectedEnvironment = ref('')
+    
+    onMounted(async () => {
+      await store.fetchEnvironmentNames(projectId).value;
+    });
+    const environmentNames = computed(() => store.environmentNames)
   </script>
   
 
