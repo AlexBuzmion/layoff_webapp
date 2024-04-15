@@ -2,15 +2,15 @@
     
     <div>
         <h2>Client Configurations</h2>
-        <label for="Env" class="spacer">Environment:</label>
-          <select v-model="selectedEnvironment" id="Env" class="spacer">
-              <option v-for="env in environmentNames" :key="env.name" :value="env.id">{{ env.name }}</option>
-          </select><br/>
+        <label for="Env" class="spacer">Environment: </label>
+            <select v-model="selectedEnvironment" id="Env" class="spacer"> 
+              <option v-for="env in environmentNames" :key="env.name" :value="env.id">{{ env.name }}</option> 
+            </select> <button :disabled="!selectedEnvironment" @click="retrieveEnvConfigs" style="margin-left: 50px;">Retrieve Configs</button><br/>
           <label for="Version" class="spacer">Client Version:
-            <input id="Version" placeholder="N/A">
+            <input id="Version" disabled placeholder="N/A">
           </label><br/>
           <label for="Debug" class="spacer">Debug Mode:
-            <input id="Debug" placeholder="N/A">
+            <input id="Debug" disabled placeholder="N/A">
           </label><br/><br/>
         
           <h2>Player Configurations</h2>
@@ -79,10 +79,15 @@
     const projectId = import.meta.env.VITE_PROJECT_ID
     const selectedEnvironment = ref('')
     
+    async function retrieveEnvConfigs() {
+      await store.fetchConfigsForEnvironment(selectedEnvironment.value);
+    }
+
     onMounted(async () => {
-      await store.fetchEnvironmentNames(projectId).value;
+      await store.fetchEnvironmentNames().value;
     });
-    const environmentNames = computed(() => store.environmentNames)
+    
+    
   </script>
   
 

@@ -5,7 +5,7 @@ import { encodeCredentials } from '/src/utility/utils.js';
 const BASE_URL = 'https://services.api.unity.com'
 let accessToken = ''
 let tokenExpiry = 0;
-const webAppScopes = ["unity.projects.get", "remote_config.configs.list"];
+const webAppScopes = ["unity.projects.get", "remote_config.configs.list", "remote_config.configs.update", "remote_config.configs.get"];
 
 // Import environment variables
 const keyId = import.meta.env.VITE_KEY_ID
@@ -49,12 +49,21 @@ export async function ensureValidToken( scopes = webAppScopes ) {
 }
 
 // Example of using the access token to make an API call
-export async function callUnityAPI(endpoint) {
+export async function callUnityAPI(endpoint, authType) {
+  let authHeader
+  switch (authType) {
+    case 'Bearer':
+      authHeader = `Bearer ${accessToken}`
+      break
+    case 'Basic':
+      authHeader = 'Basic ' + encodeCredentials(keyId, secretKey)
+      break
+  }
   const basicAuth = encodeCredentials(keyId, secretKey)
   await ensureValidToken();
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     headers: {
-      'Authorization': 'Basic '+ basicAuth,
+      'Authorization': authHeader,
     }
   });
 
@@ -64,7 +73,5 @@ export async function callUnityAPI(endpoint) {
     console.error('Error response:', errorBody)
     throw new Error(`API call failed: ${errorBody.message || 'No error message provided'}`)
   }
-  // log the response
-  console.log('response:', response)
   return await response.json()
 }
