@@ -9,7 +9,6 @@
                         <RouterLink :to="item.path" class="column">{{ item.section }}</RouterLink>
                         
                     </li>   
-                    <li><UnityLogin v-if="authStore.isLoggedIn" @login="callback" /></li>
                 </ul>
             </nav>
         </div>
@@ -22,7 +21,6 @@
     import { computed} from 'vue'
     import { RouterLink } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
-    import UnityLogin from '@/components/UnityLogin.vue'
 
 
     const authStore = useAuthStore();

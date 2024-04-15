@@ -3,17 +3,10 @@ import HomeView from '../views/HomeView.vue'
 import AboutViewVue from '@/views/AboutView.vue'
 import ChartsViewVue from '@/views/ChartsView.vue'
 import RemoteConfigurationsVue from '@/views/RemoteConfigurations.vue'
-import LoginView from '/src/components/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/login',
-      name: 'Login',
-      component: LoginView,
-      meta: {requiresAuth: false}
-    },
     {
       path: '/',
       name: 'Home',
