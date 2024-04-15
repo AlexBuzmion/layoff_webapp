@@ -1,22 +1,48 @@
-<script>
-import { fetchData } from '@/services/unityService';
+<template>
+  <div class="login-container">
+    <form @submit.prevent="handleLogin">
+      <div>
+        <label for="username">Username:</label>
+        <input id="username" v-model="username" type="text" required />
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input id="password" v-model="password" type="password" required />
+      </div>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</template>``
 
-export default {
-  name: 'UnityLogin',
-  data() {
-    return {
-      data: null, // or appropriate default
-    };
-  },
-  async mounted() {
+<script setup>
+  import { ref } from 'vue';
+  import { useAuthStore } from '@/stores/auth'; // Import the auth store
+
+  // Reactive properties for the form inputs
+  const username = ref('');
+  const password = ref('');
+
+  // Use the auth store
+  const authStore = useAuthStore();
+
+  // The method to handle the login form submission
+  const handleLogin = async () => {
     try {
-      const endpoint = 'someUnityEndpoint';
-      const projectId = '201999f5-12d0-4557-b5f6-7f60846c2730';
-      const environmentId = 'your_environment_id';
-      this.data = await fetchData(endpoint, projectId, environmentId);
+      // Perform the login operation
+      await authStore.loginWithUnity(username.value, password.value);
+      // Optionally, redirect the user or show a success message
     } catch (error) {
-      // Handle error or display message
+      console.error('Login failed:', error);
+      // Handle login failure (e.g., show an error message)
     }
-  },
-};
+  };
 </script>
+<style>
+@media (max-width: 1024px ) {
+  .about {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+}
+</style>

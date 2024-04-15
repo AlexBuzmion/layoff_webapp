@@ -7,11 +7,9 @@
                 <ul>
                     <li v-for="(item, i) in filteredNavMenu" :key="i">
                         <RouterLink :to="item.path" class="column">{{ item.section }}</RouterLink>
+                        
                     </li>   
-
-                    <GoogleLogin :callback="callback"></GoogleLogin>
-                    <div style="align-items: right;">
-                    </div>
+                    <li><UnityLogin v-if="authStore.isLoggedIn" @login="callback" /></li>
                 </ul>
             </nav>
         </div>
@@ -24,6 +22,8 @@
     import { computed} from 'vue'
     import { RouterLink } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
+    import UnityLogin from '@/components/UnityLogin.vue'
+
 
     const authStore = useAuthStore();
 
@@ -37,6 +37,8 @@
     const navMenuNotLoggedIn = [
         { path: "/", section:"Home", }, 
         { path: "/about", section:"About", },
+        { path: "/login", section:"Login", },
+        
     ];
 
     const filteredNavMenu = computed(() => {
