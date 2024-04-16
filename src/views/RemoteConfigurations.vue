@@ -1,4 +1,4 @@
-<template v-if="mappedConfigs['CharacterSettings']">
+<template>
     
     <div>
         <h2>Client Configurations</h2>
@@ -7,7 +7,7 @@
               <option v-for="env in environmentNames" :key="env.name" :value="env.id">{{ env.name }}</option> 
             </select> <button :disabled="!selectedEnvironment" @click="retrieveEnvConfigs" style="margin-left: 50px;">Retrieve Configs</button><br/>
           <label for="Version" class="spacer">Client Version:
-            <input id="Version" disabled placeholder="N/A">
+            <input id="Version" :value="configs['ConfigVersion']" disabled placeholder="N/A">
           </label><br/>
           <label for="Debug" class="spacer">Debug Mode:
             <input id="Debug" disabled placeholder="N/A">
@@ -79,7 +79,7 @@
     const projectId = import.meta.env.VITE_PROJECT_ID
     const selectedEnvironment = ref('')
     const environmentNames = computed(() => store.environmentNames)
-    const mappedConfigs = computed(() => store.configs)
+
     
     async function retrieveEnvConfigs() {
       await store.fetchConfigsForEnvironment(selectedEnvironment.value);
