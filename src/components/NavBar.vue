@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-    import { computed} from 'vue'
+    import { computed, onMounted, watch} from 'vue'
     import { RouterLink, useRouter } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
     
@@ -30,21 +30,35 @@
     // Login call to AuthStore
     const login = () => { authStore.login() }
     // Logout call to AuthStore
-    const logout = () => { authStore.logout() }
+    const logout = () => { 
+        authStore.logout() 
+        router.push('/')
+    }
+
     // guard routes based on user login status
-    const filteredNavMenu = computed(() => {
+    const filteredNavMenu = computed(() => getFilteredNavMenu());
+
+    // Trigger navbar updates when login status changes
+    const updateNavbarOnAuthChange = () => {
+        filteredNavMenu.value = getFilteredNavMenu()
+    }
+
+    // Function to get filtered navigation menu based on auth state
+    const getFilteredNavMenu = () => {
         return router.options.routes
         .filter(route => {
-        // If a route requires auth, only show it when the user is logged in
-        if (route.meta.requiresAuth) return authStore.isLoggedIn
-        // Otherwise, the route does not require auth and should always be shown
-        return true
+            // Show route if it does not require auth or if user is logged in
+            return !route.meta.requiresAuth || authStore.isLoggedIn
         })
         .map(route => ({
         path: route.path,
         section: route.name,
         }))
-    })
+    }
+
+    // Watch for changes in login state to update navbar
+    watch(() => authStore.isLoggedIn, updateNavbarOnAuthChange, { immediate: true });
+
 
 </script>
 
