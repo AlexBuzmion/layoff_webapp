@@ -36,8 +36,6 @@ export const useRemoteConfigStore = defineStore('remoteConfig', {
           const configs = await callUnityAPI(endpoint, authType)
           this.envIdConfigs = configs.configs
           this.mapConfigs(configs.configs)
-          console.log('Configs for selected environment:', this.configs)
-          console.log('Mapped configs:', this.configs)
         } catch (error) {
           console.error('Error fetching configs:', error)
         }

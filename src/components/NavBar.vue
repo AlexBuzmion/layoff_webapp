@@ -29,6 +29,7 @@
 
     // Login call to AuthStore
     const login = () => { authStore.login() }
+    
     // Logout call to AuthStore
     const logout = () => { 
         authStore.logout() 
@@ -57,7 +58,11 @@
     }
 
     // Watch for changes in login state to update navbar
-    watch(() => authStore.isLoggedIn, updateNavbarOnAuthChange, { immediate: true });
+    watch(() => authStore.isLoggedIn, (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+            getFilteredNavMenu(); // Refresh navigation or other data when login state changes
+        }
+    })
 
 
 </script>
