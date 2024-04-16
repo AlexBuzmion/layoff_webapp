@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import HomeView from '../views/HomeView.vue'
 import AboutViewVue from '@/views/AboutView.vue'
 import ChartsViewVue from '@/views/ChartsView.vue'
@@ -37,4 +38,15 @@ const router = createRouter({
   ]
 })
 
+  router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore(); // Use the auth store
+    // Check if the route requires authentication.
+    if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+      // Open Netlify Identity modal if not authenticated.
+      window.netlifyIdentity.open('login')
+    } else {
+      // Proceed as normal if authenticated or if auth is not required.
+      next();
+    }
+  })
 export default router

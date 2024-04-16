@@ -20,9 +20,26 @@
 
 <script setup>
 
-import NavBar from './components/NavBar.vue';
+  import NavBar from './components/NavBar.vue'
+  import { onMounted } from 'vue'
+  import { useAuthStore } from '@/stores/auth'
 
+  const authStore = useAuthStore()
+  authStore.initialize()
 
+  onMounted(() => {
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on('init', (user) => {
+        if (!user) {
+          window.netlifyIdentity.on('login', () => {
+            document.location.href = '/admin/'
+          });
+        }
+      });
+      window.netlifyIdentity.init()
+    }
+  })
+  
 </script>
   
 <style scoped>

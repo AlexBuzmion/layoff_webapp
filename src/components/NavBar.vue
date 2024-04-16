@@ -1,59 +1,51 @@
 <template>
     
     <section class="wrapper">
-
+        
         <div class="navbar">
             <nav>
-                <ul>
+                <ul class="navbar-nav">
+                    <li><img src="/src/assets/NahLogo.png" alt="Logo" width="80" height="48"></li>
                     <li v-for="(item, i) in filteredNavMenu" :key="i">
-                        <RouterLink :to="item.path" class="column">{{ item.section }}</RouterLink>
-                        
-                    </li>   
+                        <RouterLink :to="item.path" class="nav-item">{{ item.section }}</RouterLink>
+                    </li>                   
+                    <li class="nav-button">
+                        <button v-if="!authStore.isLoggedIn" @click="login">Login</button>
+                        <button v-else @click="logout">Logout</button>
+                    </li>
                 </ul>
             </nav>
         </div>
-
     </section>
- 
 </template>
 
 <script setup>
     import { computed} from 'vue'
-    import { RouterLink } from 'vue-router'
+    import { RouterLink, useRouter } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
-
-
-    const authStore = useAuthStore();
-
-    const navMenuLoggedin = [
-        { path: "/", section:"Home", }, 
-        { path: "/charts", section:"Player Data", }, 
-        { path: "/remote-config", section:"Remote Config",},
-        { path: "/about", section:"About", },
-    ];
-
-    const navMenuNotLoggedIn = [
-        { path: "/", section:"Home", }, 
-        { path: "/about", section:"About", },
-        { path: "/login", section:"Login", },
-        
-    ];
-
-    const filteredNavMenu = computed(() => {
-        // Only show the full nav menu if the user is logged in
-        if (authStore.isLoggedIn) {
-            return navMenuNotLoggedIn;
-        }
-        return navMenuLoggedin;
-
-    });
-    const callback = (response) => {
-    if (response && response.success) {
-        authStore.setUserDetails(response.user);
-    }
-};
-
     
+    const router = useRouter()
+    const authStore = useAuthStore()
+
+    // Login call to AuthStore
+    const login = () => { authStore.login() }
+    // Logout call to AuthStore
+    const logout = () => { authStore.logout() }
+    // guard routes based on user login status
+    const filteredNavMenu = computed(() => {
+        return router.options.routes
+        .filter(route => {
+        // If a route requires auth, only show it when the user is logged in
+        if (route.meta.requiresAuth) return authStore.isLoggedIn
+        // Otherwise, the route does not require auth and should always be shown
+        return true
+        })
+        .map(route => ({
+        path: route.path,
+        section: route.name,
+        }))
+    })
+
 </script>
 
 <style scoped>
@@ -63,6 +55,14 @@
     align-items: center; /* This will vertically center-align the items */
     background: var(--medium);
     font-weight: 700;
+}
+
+.navbar-nav {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 ul {
@@ -82,8 +82,12 @@ li:last-child {
     margin-right: 0; /* Remove margin from the last item */
 }
 
-.GoogleLogin {
-    margin-left: auto; /* This will push the GoogleLogin button to the far right */
+.nav-button {
+    margin-left: auto; /* Push the button to the right */
+}
+.nav-button button {
+    
+    padding: 10px 20px;
 }
 
 </style>
