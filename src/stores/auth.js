@@ -27,6 +27,7 @@ export const useAuthStore = defineStore('auth', {
             window.netlifyIdentity.on('login', (user) => {
                 this.setUser(user)
                 window.netlifyIdentity.close()
+                window.location.reload(true)
             })
 
             window.netlifyIdentity.on('logout', () => {
