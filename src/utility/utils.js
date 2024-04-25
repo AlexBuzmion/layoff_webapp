@@ -25,3 +25,12 @@ export function transformToDictionary(configArray) {
     console.log(configDict);
     return configDict;
   }
+
+  export function convertToDictionary(resultsArray) {
+    const statsDictionary = {};
+    resultsArray.forEach(item => {
+      // takes the key value pair and stores it in the dictionary
+      statsDictionary[item.key] = item.value;
+    });
+    return statsDictionary;
+  }

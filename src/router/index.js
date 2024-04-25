@@ -31,7 +31,6 @@ const router = createRouter({
       path: '/remote-config',
       name: 'Remote Config',
       component: RemoteConfigurationsVue, 
-
       meta : {requiresAuth: true}
     },
 
