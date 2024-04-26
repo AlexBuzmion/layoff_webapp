@@ -1,21 +1,22 @@
 // Created on Sun Apr 01 2024 || Copyright© 2024 || By: Alex Buzmion II
-// Import necessary utilities
+
+//
+
 import { encodeCredentials } from '/src/utility/utils.js';
 
 const BASE_URL = 'https://services.api.unity.com'
 let accessToken = ''
 let tokenExpiry = 0;
-//const webAppScopes = ["unity.projects.get", "remote_config.configs.list", "remote_config.configs.update", "remote_config.configs.get"];
 
-// Import environment variables
+// import environment variables
 const keyId = import.meta.env.VITE_KEY_ID
 const secretKey = import.meta.env.VITE_SECRET_KEY
 const projectId = import.meta.env.VITE_PROJECT_ID
-// Function to fetch a new access token
+// function to fetch a new access token
 async function fetchAccessToken(keyId, secretKey, projectId, environmentId = 'development') {
   const credentials = encodeCredentials(keyId, secretKey)
   
-  // Append the projectId as a query parameter to the URL
+  // append the projectId as a query parameter to the URL
   const urlWithProjectId = `${BASE_URL}/auth/v1/token-exchange?projectId=${encodeURIComponent(projectId)}&environmentId=${encodeURIComponent(environmentId)}`
 
   const response = await fetch(urlWithProjectId, {
@@ -24,14 +25,14 @@ async function fetchAccessToken(keyId, secretKey, projectId, environmentId = 'de
       'Authorization': `Basic ${credentials}`,
       'Content-Type': 'application/json',
     },
-    //body: JSON.stringify({ scopes: scopes })
+
   });
-  // Check if the request was successful
+  // check if the request was successful
   if (response.ok) {
     const data = await response.json()
     accessToken = data.accessToken;
     tokenExpiry = Date.now() + 3600 * 1000; // tracks token expiration (1 hour)
-    return accessToken; // Return the access token
+    return accessToken; // return the access token
   } else {
     // Handle errors if the response was not ok
     const errorBody = await response.json();
@@ -40,14 +41,12 @@ async function fetchAccessToken(keyId, secretKey, projectId, environmentId = 'de
   }
 }
 
-// Ensure the access token is valid
-// export async function ensureValidToken( scopes = webAppScopes ) {
+// ensure the access token is valid
 export async function ensureValidToken() {
   if (!accessToken || Date.now() >= tokenExpiry) {
     //await fetchAccessToken(keyId, secretKey, projectId, scopes)
     let environmentId = '68412558-aa05-4ce8-a6d8-3a1491b8c683'
     await fetchAccessToken(keyId, secretKey, projectId, environmentId)
-
   }
 }
 
@@ -55,7 +54,7 @@ export async function ensureValidToken() {
 // requires the type of service to switch case to the url of the service
 // requires the type of authentication to switch case to the type of authentication
 // requires the endpoint to call the API
-export async function callUnityAPI(endpoint, authType, service, body) {
+export async function callUnityAPI(endpoint, authType, service, body= null, method = 'GET') {
   let urlAPI
   switch (service) {
     case 1:
@@ -79,11 +78,18 @@ export async function callUnityAPI(endpoint, authType, service, body) {
       authHeader = 'Basic ' + encodeCredentials(keyId, secretKey)
       break
   }
+  
   let pathParameters = {
+    method: method,
     headers: {
       'Authorization': authHeader,
     }, 
   }
+  if (body && (method === 'POST' || method === 'PUT')) {
+    pathParameters.body = JSON.stringify(body)
+  }
+
+
   const response = await fetch(`${urlAPI}${endpoint}`, pathParameters)
   
   if (!response.ok) {

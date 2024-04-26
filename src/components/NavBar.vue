@@ -10,7 +10,7 @@
                         <RouterLink :to="item.path" class="nav-item">{{ item.section }}</RouterLink>
                     </li>                   
                     <li class="nav-button">
-                        <button v-if="!authStore.isLoggedIn" @click="login">Login</button>
+                        <button class="button" v-if="!authStore.isLoggedIn" @click="login">Login</button>
                         <button v-else @click="logout">Logout</button>
                     </li>
                 </ul>
@@ -106,7 +106,24 @@ li:last-child {
 }
 .nav-button button {
     
-    padding: 10px 20px;
+    display: inline-block;
+    padding: 10px 25px;
+    font-size: 20px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #dd720e;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #363636;
+}
+.button:hover {background-color: #dd8430}
+.button:active {
+  background-color: #dd8430;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }
 
 </style>

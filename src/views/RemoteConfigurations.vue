@@ -1,97 +1,76 @@
 <template>
     
     <div>
-        <h2>Client Configurations</h2>
-        <label for="Env" class="spacer">Environment: </label>
-            <select v-model="selectedEnvironment" id="Env" class="spacer"> 
-              <option v-for="env in environmentNames" :key="env.name" :value="env.id">{{ env.name }}</option> 
-            </select> <button :disabled="!selectedEnvironment" @click="retrieveEnvConfigs" style="margin-left: 50px;">Retrieve Configs</button><br/>
-          <label for="Version" class="spacer">Client Version:
-            <input id="Version" :value="configs['ConfigVersion']" disabled placeholder="N/A">
-          </label><br/>
-          <label for="Debug" class="spacer">Debug Mode:
-            <input id="Debug" disabled placeholder="N/A">
-          </label><br/><br/>
+      <h1 v-if="selectedEnvironment === remoteConfigStore.environmentNames[0]?.id" style="color: darkorange; border: dotted 1px; text-align: center;">YOU ARE NOW EDITING PRODUCTION</h1>
+      <h2>Client Configurations</h2>
+      <label>Environment: </label>
+      <select v-model="selectedEnvironment" > 
+        <option v-for="env in environmentNames" :key="env.id" :value="env.id">{{ env.name }}</option> 
+      </select><br/>
+      <label for="Version" >Client Version:
+        <input id="Version" disabled placeholder="N/A">
+      </label><br/>
+      <label for="Debug" >Debug Mode:
+        <input id="Debug" :value="configurations['DebugMode']" placeholder="N/A">
+      </label><br/><br/>
+          
+          <div v-for="(config, configName) in configurations" :key="configName">
+            <h2>{{ configName }}</h2>
+            <div>
+              <div v-for="(value, key) in config" :key="key">
+                <label :for="key" class="spacer">{{ key }}:
+                  <input :id="key" v-model="config[key]">
+                </label><br/>
+              </div>
+            </div>
+            <br/>
+          </div>
         
-          <h2>Player Configurations</h2>
-        <div class="">
-          <label for="MS" class="spacer">Movement Speed:
-            <input id="MS" placeholder="N/A">
-          </label><br/>
-            <label for="deathPosX" class="spacer">Dash Speed: 
-                <input id="deathPosX" placeholder="N/A">
-            </label><br/>
-            <label for="deathPosY" class="spacer">Jump Height: 
-                <input name="deathPosY" placeholder="N/A">
-            </label><br/>
-            <label for="wins" class="spacer">Trap Setting Speed: 
-                <input name="wins" placeholder="N/A">
-            </label><br/>            
-        </div><br/>
-        
-        <h2>Trap Configurations</h2>
-        <select>Trap 1
-          <option value="Trap1">Bouncing Betty</option>
-          <option value="Trap2">Poison Dart</option>
-          <option value="Trap3">Doom Puff</option>
-          <option value="Trap4">Skyfall Snare</option>
-          <option value="Trap5">Trap 5</option>
-          <option value="Trap6">Trap 6</option>
-          <option value="Trap7">Trap 7</option>
-        </select><br/>
-        <label for="Enabled" class="spacer">Enabled in Game: 
-          <input name="Enabled" placeholder="N/A">
-        </label><br/>
-        <label for="Damage" class="spacer">Damage: 
-          <input name="Damage" placeholder="N/A">
-        </label><br/>
-        <label for="Range" class="spacer">Effective Range: 
-          <input name="Range" placeholder="N/A">
-        </label><br/>
-        <label for="Range" class="spacer">Setting Range: 
-          <input name="Range" placeholder="N/A">
-        </label><br/>
-        <label for="DSpeed" class="spacer">Detonate Speed: 
-          <input name="DSpeed" placeholder="N/A">
-        </label><br/><br/>
-        
-        <h2>Game Configurations</h2>
-        <label for="TrapSS" class="spacer">Trap Spawn Speed: 
-          <input name="TrapSS" placeholder="N/A">
-        </label><br/>
-        <label for="RoomSize" class="spacer">Room Size: 
-            <input name="RoomSize" placeholder="N/A">
-        </label><br/>
-        <label for="RoomQty" class="spacer">Number of Rooms: 
-            <input name="RoomQty" placeholder="N/A">
-        </label><br/>
-        <label for="deaths" class="spacer">Deaths: 
-            <input name="deaths" placeholder="N/A">
-        </label>
+          <button @click="openModal">Save</button>
       </div>
   </template>
   
   <script setup>
+    import { onMounted, ref, computed, watch, reactive} from 'vue'
     import { useRemoteConfigStore } from '@/stores/remoteConfigData';
-    import { onMounted, ref, computed} from 'vue'
-    
-    const store = useRemoteConfigStore()
-    const projectId = import.meta.env.VITE_PROJECT_ID
-    const selectedEnvironment = ref('')
-    const environmentNames = computed(() => store.environmentNames)
 
-    
-    async function retrieveEnvConfigs() {
-      await store.fetchConfigsForEnvironment(selectedEnvironment.value);
+    const configChanges = reactive({})
+    const remoteConfigStore = useRemoteConfigStore()
+    const selectedEnvironment = ref('')
+    const environmentNames = computed(() => remoteConfigStore.environmentNames)
+    const isModalOpened = ref(false);
+
+    const openModal = () => {
+      isModalOpened.value = true;
+    };
+    const closeModal = () => {
+      isModalOpened.value = false;
+    };
+
+    const submitHandler = ()=>{
+      //here you do whatever
     }
 
-    const configs = computed(() => store.configs);
+    watch(selectedEnvironment, async (newEnvId) => {
+      if (newEnvId) {
+        await remoteConfigStore.FetchConfigsForEnvironment(newEnvId)
+      }
+    });
+    const configs = computed(() => remoteConfigStore.configurations)
+    
+    const configurations = computed(() => {
+      return {
+        'Player Configurations': remoteConfigStore.playerConfigs,
+        'Game Configurations': remoteConfigStore.gameConfigs,
+        'Trap Configurations': remoteConfigStore.trapConfigs
+      }
+    })
 
     onMounted(async () => {
-      await store.fetchEnvironmentNames();
-      if (store.environmentNames.length > 0) {
-        const defaultEnvId = store.environmentNames[0].id;
-        await store.fetchConfigsForEnvironment(defaultEnvId);
+      await remoteConfigStore.FetchEnvironmentNames();
+      if (environmentNames.value.length > 0) {
+        selectedEnvironment.value = environmentNames.value[1].id
+        await remoteConfigStore.FetchConfigsForEnvironment(selectedEnvironment.value)
       }
     });
   </script>
@@ -105,15 +84,20 @@
     }
   }
 
-.flex-container {
-  display: flex;
+  .flex-container {
+    display: flex;
+  }
+
+  .flex-container > div {
+    background-color: #f1f1f1;
+    margin: 10px;
+    padding: 20px;
+    font-size: 30px;
 }
 
-.flex-container > div {
-  background-color: #f1f1f1;
-  margin: 10px;
-  padding: 20px;
-  font-size: 30px;
-}
+  input[type=checkbox] {
+    outline: 2px solid rgb(218, 120, 10);
+    margin: 1%;
+  }
   </style>
   

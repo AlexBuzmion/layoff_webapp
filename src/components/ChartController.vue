@@ -7,14 +7,14 @@
             <form class="sample-form" @submit.prevent="handleSubmit">
                 <label for="player-info" class="spacer  ">Player:
                     <select id="player-info" v-model="selectedPlayerID" 
-                    @change="cloudSaveData.pSetSelectedPID(selectedPlayerID)">
+                    @change="cloudSaveData.SetSelectedPID(selectedPlayerID)">
                         <option selected value=''>All Players</option> 
                         <option v-for="player in cloudSaveData.playerList" 
                         :key="player.id" :value="player.id">{{ player.id }}</option>
                     </select>
                 </label>
                 <label v-if="selectedPlayerID!=''" for="session-info" class="spacer">Session:
-                    <select id="session-info" v-model="selectedSessionID" @change="cloudSaveData.pSetSelectedSID(selectedSessionID)">
+                    <select id="session-info" v-model="selectedSessionID" @change="cloudSaveData.SetSelectedSID(selectedSessionID)">
                         <option selected value=''>All Sessions...</option>
                         <option v-for="session in sessionOptions" :key="session" :value="session">{{ session }}</option>
                     </select>
@@ -30,7 +30,8 @@
                             <tr>
                                 <th v-if="selectedPlayerID === '' || selectedSessionID === ''">Sessions</th>
                                 <th v-else>Session ID</th>
-                                <th>Ave. Time<br/> per Round</th>
+                                <th v-if="selectedSessionID === '' ">Ave. Time<br/> per Round</th>
+                                <th v-else>Time Played</th>
                                 <th>Wins</th>
                                 <th>Losses</th>
                                 <th>Deaths</th>
@@ -114,12 +115,12 @@
     const cloudSaveData = useCloudSaveStore();
     
     async function retrieveAllPlayerData() {
-      await cloudSaveData.fetchAllPlayerData();
+      await cloudSaveData.FetchAllPlayerData();
     }
 
     async function retrievePlayerList(){
         try {
-            await cloudSaveData.fetchPlayerList();
+            await cloudSaveData.FetchPlayerList();
         }
         catch (error) {
             console.log('Error retrieving player list', error)
@@ -130,20 +131,20 @@
     onMounted(async () => {
         await retrievePlayerList();
         await retrieveAllPlayerData();
-        cloudSaveData.getAggregateData();
+        cloudSaveData.GetAggregateData();
     })
     // update selected PID in cloudSaveData pinia store
     const selectedPlayerID = computed({
         get: () => cloudSaveData.selectedPID|| '',
         set: (valueX) => {
-            cloudSaveData.pSetSelectedPID(valueX)
+            cloudSaveData.SetSelectedPID(valueX)
         }
     })
 
     const selectedSessionID = computed({
         get: () => cloudSaveData.selectedSID|| '',
         set: (valueX) => {
-            cloudSaveData.pSetSelectedSID(valueX)
+            cloudSaveData.SetSelectedSID(valueX)
         }
     })
 
@@ -154,11 +155,11 @@
     
     const displayData = computed(() => {
         if (!selectedPlayerID.value) {
-            return cloudSaveData.getAggregateData(); // gets aggregate data for all players
+            return cloudSaveData.GetAggregateData(); // gets aggregate data for all players
         } else if (selectedPlayerID.value && !selectedSessionID.value) {
-            return cloudSaveData.getPlayerAggregateData(selectedPlayerID.value); // gets aggregate for one player
+            return cloudSaveData.GetPlayerAggregateData(selectedPlayerID.value); // gets aggregate for one player
         } else {
-            return cloudSaveData.getSessionData(selectedPlayerID.value, selectedSessionID.value); // data for a specific session
+            return cloudSaveData.GetSessionData(selectedPlayerID.value, selectedSessionID.value); // data for a specific session
         }
     })
     

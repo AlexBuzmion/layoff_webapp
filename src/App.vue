@@ -1,6 +1,5 @@
 <template>
   <header class="header">
-        <h1>NAH Studio</h1>
   </header>
 
   <div class="row">

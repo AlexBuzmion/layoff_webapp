@@ -1,7 +1,13 @@
 // Created on Wed Apr 19 2024 || Copyright© 2024 || By: Alex Buzmion II
+/*  API call structure: takes in the authentication type, the endpoint, and the body of the request
+  * The function then fetches the access token and makes the API call to the specific endpoint
+  * Then passes to callUnityAPI() in unityService.js for proper formatting & handling
+  * The function returns the data from the API call and stores it in the state
+*/
+
 import { callUnityAPI } from '@/services/unityService'
 import { defineStore } from 'pinia'
-import { convertToDictionary } from '@/utility/utils'
+import { convCSToDict } from '@/utility/utils'
 
 const projectId = import.meta.env.VITE_PROJECT_ID
 
@@ -15,18 +21,7 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
     }),
 
     actions: {
-        async fetchPlayerData(authType = 'Bearer') {
-            const playerId = "OhtjllIePqaXKkLjczbnvRQcLiJa" // const for now but needs a way to pull it all
-            try {
-              const data = await callUnityAPI(`/v1/data/projects/${encodeURIComponent(projectId)}/players/${playerId}/items`, authType, 2, 'GET')
-              console.log(data)
-            } 
-            catch (error) {
-              console.error('Error fetching environment names:', error)
-            }
-        },
-
-        async fetchPlayerList(authType = 'Basic') {
+        async FetchPlayerList(authType = 'Basic') {
             try {
                 const data = await callUnityAPI(`/player-identity/v1/projects/${encodeURIComponent(projectId)}/users?limit=500`, authType, 1)
                 this.playerList = data.results || []; // append player list in the state playerList
@@ -37,7 +32,7 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
         },
 
         // a function to iterate through the player list and get the player data and store them in the state playerData
-        async fetchAllPlayerData(authType = 'Bearer') {
+        async FetchAllPlayerData(authType = 'Bearer') {
             let allPlayerData = {};
             
             for (let player of this.playerList) {
@@ -47,7 +42,8 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
                     
                     // if data.items is an array and transformToDictionary transforms it to an object
                     if (response.results && Array.isArray(response.results)) {
-                        allPlayerData[player.id] = convertToDictionary(response.results);
+                        allPlayerData[player.id] = convCSToDict(response.results);
+                        
                     } else {
                         console.error(`Expected an array for player data, received:`, response.results);
                     }
@@ -58,18 +54,19 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
         
             // Now update the state with all fetched and transformed player data
             this.playerData = allPlayerData;
+            console.log('All player data:', allPlayerData);
         },
         
-        pSetSelectedPID(id) {
+        SetSelectedPID(id) {
             this.selectedPID = id;
         },
 
-        pSetSelectedSID(id) {
+        SetSelectedSID(id) {
             this.selectedSID = id;
         },
 
         // method when all players is selected
-        getAggregateData() {
+        GetAggregateData() {
             let totalStats = {
                 sessions: 0, // total
                 averageTime: 0, // average
@@ -123,7 +120,7 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
             return totalStats
         },
 
-        getPlayerAggregateData(playerId) {
+        GetPlayerAggregateData(playerId) {
             const playerStats = {
                 sessions: 0, // total
                 averageTime: 0, // average
@@ -174,32 +171,32 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
             for (let key in playerStats) {
                 playerStats[key] = parseFloat(playerStats[key].toFixed(2))
             }
-            return playerStats;
+            return playerStats
         },
         
-        getSessionData(playerId, sessionId) {
-            const playerSessions = this.playerData[playerId];
-            if (!playerSessions) return {};
+        GetSessionData(playerId, sessionId) {
+            const playerSessions = this.playerData[playerId]
+            if (!playerSessions) return {}
         
             const sessionKeys = Object.keys(playerSessions); // get all session keys like ['playerStats1', 'playerStats2', ...]
             const sessionIndex = sessionKeys.findIndex(key => key === sessionId); // Find the index of the specific session key
         
-            if (sessionIndex === -1) return {}; // if the session key is not found
-        
+            if (sessionIndex === -1) return {} // if the session key is not found
+            
             const sessionData = playerSessions[sessionId];
-            if (!sessionData) return {};
-        
+            if (!sessionData) return {}
+            
             return {
                 sessionId: sessionId, // the key of the session
                 averageTime: parseFloat((sessionData.TimePlayed).toFixed(2)), // time played
                 ...sessionData  // spread the session data
-            };
+            }
         }
         
     },
 
     getters: {
-        pSelectedPlayer: (state) => {
+        SelectedPlayer: (state) => {
             return state.playerList.find(p => p.id === state.selectedPID) || null
         },
 
