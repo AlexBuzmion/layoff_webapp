@@ -8,7 +8,7 @@
 import { callUnityAPI } from '@/services/unityService';
 import { defineStore } from 'pinia';
 
-const projectId = () => import.meta.env.VITE_PROJECT_ID;
+const projectId = import.meta.env.VITE_PROJECT_ID;
 
 export const useRemoteConfigStore = defineStore('remoteConfig', {
   state: () => ({
@@ -23,7 +23,7 @@ export const useRemoteConfigStore = defineStore('remoteConfig', {
     // fetches all the environment names available in the project
     async FetchEnvironmentNames(authType = 'Basic') {
       try {
-        const data = await callUnityAPI(`/remote-config/v1/projects/${encodeURIComponent(projectId())}/environments`, authType);
+        const data = await callUnityAPI(`/remote-config/v1/projects/${encodeURIComponent(projectId)}/environments`, authType);
         this.environmentNames = data.environments;
       } catch (error) {
         console.error('Error fetching environment names:', error);
@@ -37,7 +37,7 @@ export const useRemoteConfigStore = defineStore('remoteConfig', {
       }
 
       try {
-        const endpoint = `/remote-config/v1/projects/${encodeURIComponent(projectId())}/environments/${encodeURIComponent(envId)}/configs`;
+        const endpoint = `/remote-config/v1/projects/${encodeURIComponent(projectId)}/environments/${encodeURIComponent(envId)}/configs`;
         const response = await callUnityAPI(endpoint, authType)
         this.configurations = response.configs
         this.SetConfigurations(this.configurations)
@@ -68,15 +68,26 @@ export const useRemoteConfigStore = defineStore('remoteConfig', {
       return configDictionary;
     },
 
-    async UpdateConfigs (configId, configValues, authType = 'Basic') {
-      const endpoint = `/remote-config/v1/projects/${encodeURIComponent(projectId)}/configs/${encodeURIComponent(configId)}`
+    async UpdateConfigsInUnity (authType = 'Basic') {
+      const endpoint = `/remote-config/v1/projects/${encodeURIComponent(projectId)}/configs/${encodeURIComponent(this.configurations[0].id)}`
+      
+      const configsArray = this.configurations[0]?.value
+      if (!configsArray) {
+        console.error('No configurations found')
+        return
+      }
+
       const body = {
         type: "settings",
-        value: configValues
+        value: configsArray.map(config => ({
+          key: config.key,
+          type: typeof config.value === 'boolean' ? 'bool' : typeof config.value,
+          value: config.value
+        }))
       }
   
       try {
-        const response = await callUnityAPI(endpoint, authType, body, 'PUT')
+        const response = await callUnityAPI(endpoint, authType, 1, body, 'PUT')
         console.log("Successfully updated configs: ", response )
         return response
       }
@@ -84,6 +95,14 @@ export const useRemoteConfigStore = defineStore('remoteConfig', {
         console.error("Error updating configs: ", error)
       }
     },
+
+    // updates the state with the new values
+    updateConfigurationsState(key, newValue) {
+      const index = this.configurations[0]?.value.findIndex(c => c.key === key)
+      if (index !== -1) {
+        this.configurations[0].value[index].value = newValue;
+      }
+    }
   },
   
 });

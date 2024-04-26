@@ -54,7 +54,7 @@ export async function ensureValidToken() {
 // requires the type of service to switch case to the url of the service
 // requires the type of authentication to switch case to the type of authentication
 // requires the endpoint to call the API
-export async function callUnityAPI(endpoint, authType, service, body= null, method = 'GET') {
+export async function callUnityAPI(endpoint, authType, service, body, method) {
   let urlAPI
   switch (service) {
     case 1:
@@ -78,25 +78,31 @@ export async function callUnityAPI(endpoint, authType, service, body= null, meth
       authHeader = 'Basic ' + encodeCredentials(keyId, secretKey)
       break
   }
-  
+
   let pathParameters = {
     method: method,
     headers: {
       'Authorization': authHeader,
+      'Content-Type': 'application/json',
     }, 
   }
   if (body && (method === 'POST' || method === 'PUT')) {
     pathParameters.body = JSON.stringify(body)
   }
-
+  console.log(`Making API call to: ${urlAPI}${endpoint}`);
+  console.log(`With parameters: ${JSON.stringify(pathParameters)}`);
 
   const response = await fetch(`${urlAPI}${endpoint}`, pathParameters)
   
   if (!response.ok) {
     const errorBody = await response.json()
-    throw new Error(`API call failed: ${errorBody || 'No error message provided'}`);
+    console.error(`API call failed: ${JSON.stringify(errorBody)}`);
+    throw new Error(`API call failed: ${errorBody.detail || JSON.stringify(errorBody)}`)
   }
   
+  if (response.status !== 204) {
   return await response.json()
+  }
 
+  return {}
 }

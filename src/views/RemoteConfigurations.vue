@@ -8,10 +8,10 @@
         <option v-for="env in environmentNames" :key="env.id" :value="env.id">{{ env.name }}</option> 
       </select><br/>
       <label for="Version" >Client Version:
-        <input id="Version" disabled placeholder="N/A">
+        <input id="Version" v-model="clientVersion"  placeholder="N/A">
       </label><br/>
       <label for="Debug" >Debug Mode:
-        <input id="Debug" :value="configurations['DebugMode']" placeholder="N/A">
+        <input type="checkbox" id="Debug" v-model="debugMode" placeholder="N/A">
       </label><br/><br/>
           
           <div v-for="(config, configName) in configurations" :key="configName">
@@ -26,29 +26,40 @@
             <br/>
           </div>
         
-          <button @click="openModal">Save</button>
+          <button @click="SaveChanges">Save</button>
       </div>
   </template>
   
   <script setup>
-    import { onMounted, ref, computed, watch, reactive} from 'vue'
+    import { onMounted, ref, computed, watch, } from 'vue'
     import { useRemoteConfigStore } from '@/stores/remoteConfigData';
 
-    const configChanges = reactive({})
     const remoteConfigStore = useRemoteConfigStore()
     const selectedEnvironment = ref('')
     const environmentNames = computed(() => remoteConfigStore.environmentNames)
-    const isModalOpened = ref(false);
 
-    const openModal = () => {
-      isModalOpened.value = true;
-    };
-    const closeModal = () => {
-      isModalOpened.value = false;
-    };
+    //Remote Config Data reactive variables
+    // configurations map stored in a computed var 
+    const configArray = computed(() => remoteConfigStore.configurations[0]?.value || []) 
+    const clientVersion = computed ({
+      get: () => {
+        const config = configArray.value.find(config => config.key === 'ClientVersion')
+        return config ? config.value : ''
+      },
+      set: (newValue) => remoteConfigStore.updateConfigurationsState('ClientVersion', newValue)
+    })
+    const debugMode = computed ({
+      get: () => {
+        const config = configArray.value.find(config => config.key === 'DebugMode')
+        return config ? config.value : ''
+      },
+      set: (newValue) => remoteConfigStore.updateConfigurationsState('DebugMode', newValue)
+    })
 
-    const submitHandler = ()=>{
-      //here you do whatever
+    
+    async function SaveChanges() {
+      await remoteConfigStore.UpdateConfigsInUnity()
+      console.log("Changes Saved")
     }
 
     watch(selectedEnvironment, async (newEnvId) => {
@@ -72,6 +83,7 @@
         selectedEnvironment.value = environmentNames.value[1].id
         await remoteConfigStore.FetchConfigsForEnvironment(selectedEnvironment.value)
       }
+      
     });
   </script>
   
