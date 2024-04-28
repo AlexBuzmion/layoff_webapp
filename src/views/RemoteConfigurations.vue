@@ -1,6 +1,8 @@
 <template>
-    
   <div>
+    <ModalComp :isOpen="isModalOpened" @modal-close="closeModal" @submit="submitHandler" name="first-modal">
+      <template #header>Configurations Saved</template>
+    </ModalComp>
     <h1 v-if="selectedEnvironment === remoteConfigStore.environmentNames[0]?.id" style="color: darkorange; border: dotted 1px; text-align: center;">YOU ARE NOW EDITING PRODUCTION</h1>
     <h2>Client Configurations</h2>
     <label>Environment: </label>
@@ -46,8 +48,7 @@
       <br/>
     </div>
 
-    
-    <button @click="SaveChanges">Save</button>
+    <button @click="SaveChanges()">Full Send</button>
     
   </div>
   </template>
@@ -55,11 +56,24 @@
   <script setup>
     import { onMounted, ref, computed, watch, } from 'vue'
     import { useRemoteConfigStore } from '@/stores/remoteConfigData';
-
+    import ModalComp from '@/components/Modal.vue'
     const remoteConfigStore = useRemoteConfigStore()
+    const environmentNames = computed(() => remoteConfigStore.environmentNames)
     const selectedEnvironment = ref('')
     const selectedTrap = ref('')
-    const environmentNames = computed(() => remoteConfigStore.environmentNames)
+    const isModalOpened = ref(false)
+
+    const openModal = () => {
+      isModalOpened.value = true;
+    }
+    const closeModal = () => {
+      isModalOpened.value = false;
+    }
+
+    const submitHandler = () => {
+      
+    }
+
 
     //Remote Config Data reactive variables
     // configurations map stored in a computed var 
@@ -85,6 +99,7 @@
       remoteConfigStore.UpdateConfigState(key, value);
     };
     async function SaveChanges() {
+      openModal()
       await remoteConfigStore.UpdateConfigsInUnity()
       console.log("Changes Saved")
     }
@@ -170,17 +185,25 @@
     margin-bottom: 10px; /* Space below the select dropdown */
   }
 
-  .logger {
-    background-color: #c24d4d; /* Green */
-    border: none;
-    color: white;
+  button {
+    display: inline-block;
+    padding: 10px 25px;
+    font-size: 16px;
+    cursor: pointer;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 12px;
+    outline: none;
+    color: #fff;
+    background-color: #dd720e;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #363636;
+}
+  button:hover {background-color: #dd8430}
+  button:active {
+    background-color: #dd8430;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
   }
 </style>
   

@@ -18,6 +18,8 @@ export const useRemoteConfigStore = defineStore('remoteConfig', {
     gameConfigs: {},
     playerConfigs: {},
     trapConfigs: {},
+    clientVers: {},
+    debugMode: {},
   }),
 
   actions: {
@@ -61,6 +63,10 @@ export const useRemoteConfigStore = defineStore('remoteConfig', {
           this.playerConfigs = parseConfigurationsObject(config.value);
         } else if (config.key === 'Trap Configurations') {
           this.trapConfigs = parseConfigurationsObject(config.value);
+        } else if (config.key === 'Client Version') {
+          this.clientVers = config.value
+        } else if (config.key === 'Debug Mode') {
+          this.debugMode = config.value
         }
       });
     },
