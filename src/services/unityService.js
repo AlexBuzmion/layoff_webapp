@@ -89,8 +89,9 @@ export async function callUnityAPI(endpoint, authType, service, body, method) {
   if (body && (method === 'POST' || method === 'PUT')) {
     pathParameters.body = JSON.stringify(body)
   }
-  console.log(`Making API call to: ${urlAPI}${endpoint}`);
-  console.log(`With parameters: ${JSON.stringify(pathParameters)}`);
+  //? quick logs to validate API endpoints and parameters to be sent
+  // console.log(`Making API call to: ${urlAPI}${endpoint}`);
+  // console.log(`With parameters: ${JSON.stringify(pathParameters)}`);
 
   const response = await fetch(`${urlAPI}${endpoint}`, pathParameters)
   
