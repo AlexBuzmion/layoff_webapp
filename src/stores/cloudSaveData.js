@@ -195,11 +195,4 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
         
     },
 
-    getters: {
-        SelectedPlayer: (state) => {
-            return state.playerList.find(p => p.id === state.selectedPID) || null
-        },
-
-    }
-
 })

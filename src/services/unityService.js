@@ -45,7 +45,7 @@ async function fetchAccessToken(keyId, secretKey, projectId, environmentId = 'de
 export async function ensureValidToken() {
   if (!accessToken || Date.now() >= tokenExpiry) {
     //await fetchAccessToken(keyId, secretKey, projectId, scopes)
-    let environmentId = '68412558-aa05-4ce8-a6d8-3a1491b8c683'
+    let environmentId = '5f6c370a-a00b-49e8-95fb-196f0958ddd4'
     await fetchAccessToken(keyId, secretKey, projectId, environmentId)
   }
 }
