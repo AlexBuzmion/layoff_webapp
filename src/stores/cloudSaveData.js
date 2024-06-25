@@ -93,7 +93,8 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
                 deathByCause: {},
                 killsByTrap: {},
                 trapsSetByType: {},
-                trapsTriggeredByType: {}
+                trapsTriggeredByType: {},
+                PlayerActions: []
             }
 
             let keyCard1Count = 0;
@@ -166,6 +167,10 @@ export const useCloudSaveStore = defineStore('cloudSaveData', {
                             totalStats.trapsTriggeredByType[key] = stats.TrapsTriggeredByType[key];
                         }
                     }
+
+                    if (stats.PlayerActions) {
+                        totalStats.PlayerActions = totalStats.PlayerActions.concat(stats.PlayerActions);
+                      }
                 })
             })
             
