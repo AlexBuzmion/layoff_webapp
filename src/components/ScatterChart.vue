@@ -1,18 +1,21 @@
 <template>
-    <div class="scatter-chart">
-      <canvas ref="chartCanvas"></canvas>
-    </div>
+    <v-chart :option="chartOptions" autoresize />
   </template>
   
   <script setup>
-  import { Chart, registerables } from 'chart.js';
-  import { onMounted, ref, nextTick, computed, watch } from 'vue';
+  import { ref, computed, watch } from 'vue';
   import { useCloudSaveStore } from '@/stores/cloudSaveData';
+  import * as echarts from 'echarts';
+  import { defineComponent } from 'vue';
+  import VChart from 'vue-echarts';
   
-  Chart.register(...registerables);
+  defineComponent({
+    components: {
+      'v-chart': VChart
+    }
+  });
   
   const cloudSaveData = useCloudSaveStore();
-  const chartCanvas = ref(null);
   
   const displayData = computed(() => {
     let data = {};
@@ -26,80 +29,7 @@
     return data;
   });
   
-  let chartInstance = null;
-  
-  const setupChart = () => {
-    if (chartInstance) {
-      chartInstance.destroy();
-    }
-  
-    const ctx = chartCanvas.value.getContext('2d');
-    const backgroundImage = new Image();
-    backgroundImage.src = '/src/assets/LayOffMap.png';
-  
-    backgroundImage.onload = () => {
-      const actionMap = {};
-      if (displayData.value.PlayerActions) {
-        displayData.value.PlayerActions.forEach(action => {
-          if (!actionMap[action.Action]) {
-            actionMap[action.Action] = [];
-          }
-          actionMap[action.Action].push({
-            x: action.Position.x,
-            y: action.Position.y,
-            time: action.Time
-          });
-        });
-      }
-  
-      const datasets = Object.keys(actionMap).map((action) => ({
-        label: action,
-        data: actionMap[action],
-        backgroundColor: actionColorMap[action] || 'black',
-      }));
-  
-      chartInstance = new Chart(ctx, {
-        type: 'scatter',
-        data: {
-          datasets: datasets,
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            beforeDraw: (chart) => {
-              const ctx = chart.ctx;
-              const canvas = chart.canvas;
-              const { width, height } = canvas;
-              ctx.drawImage(backgroundImage, 0, 0, width, height);
-            },
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  const action = context.dataset.label;
-                  const time = context.raw.time;
-                  return `${action} at (${context.raw.x}, ${context.raw.y}) - ${time}s`;
-                },
-              },
-            },
-          },
-          scales: {
-            x: {
-              type: 'linear',
-              position: 'bottom',
-              min: -20,
-              max: 25,
-            },
-            y: {
-              type: 'linear',
-              position: 'left',
-              min: 0,
-              max: 60,
-            },
-          },
-        },
-      });
-    };
-  };
+  const chartOptions = ref({});
   
   const actionColorMap = {
     Died: 'red',
@@ -116,30 +46,90 @@
     Jump: 'darkblue',
   };
   
-  onMounted(() => {
-    nextTick(() => {
-      setupChart();
-    });
-  });
+  const actionPointStyleMap = {
+    Died: 'crossRot',
+    Spawned: 'circle',
+    Interacted: 'rect',
+    Trap1Set: 'triangle',
+    Trap2Set: 'triangle',
+    Trap3Set: 'triangle',
+    Trap4Set: 'triangle',
+    Dash: 'rectRot',
+    Crouch: 'star',
+    Shove: 'rectRounded',
+    WasShoved: 'rectRounded',
+    Jump: 'line',
+  };
   
-  watch(() => cloudSaveData.selectedPID, () => {
-    nextTick(() => {
-      setupChart();
-    });
-  }, { immediate: true });
+  const updateChartOptions = () => {
+    const actionMap = {};
+    if (displayData.value.PlayerActions) {
+      displayData.value.PlayerActions.forEach(action => {
+        if (!actionMap[action.Action]) {
+          actionMap[action.Action] = [];
+        }
+        actionMap[action.Action].push({
+          value: [action.Position.x, action.Position.y],
+          time: action.Time
+        });
+      });
+    }
   
-  watch(() => cloudSaveData.selectedSID, () => {
-    nextTick(() => {
-      setupChart();
-    });
+    const seriesData = Object.keys(actionMap).map(action => ({
+      name: action,
+      type: 'scatter',
+      data: actionMap[action],
+      symbolSize: 10,
+      itemStyle: {
+        color: actionColorMap[action] || 'black'
+      },
+      symbol: actionPointStyleMap[action] || 'circle'
+    }));
+  
+    chartOptions.value = {
+      xAxis: {
+        min: -20,
+        max: 25,
+        type: 'value'
+      },
+      yAxis: {
+        min: 0,
+        max: 60,
+        type: 'value'
+      },
+      series: seriesData,
+      graphic: {
+        type: 'image',
+        z: -1,
+        style: {
+          image: '/src/assets/LayOffMap.png',
+          width: 714,
+          height: 889
+        },
+        left: 'center',
+        top: 'center',
+        bounding: 'raw',
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: params => {
+          const action = params.seriesName;
+          const time = params.data.time;
+          return `${action} at (${params.value[0]}, ${params.value[1]}) - ${time}s`;
+        }
+      }
+    };
+  };
+  
+  watch(() => [cloudSaveData.selectedPID, cloudSaveData.selectedSID, displayData], () => {
+    updateChartOptions();
   }, { immediate: true });
   </script>
   
-<style scoped>
-canvas {
-  height: 714px;
-  width: 889px;
-}
-</style>
-
+  <style scoped>
+  .v-chart {
+    height: 100vh; /* Full height */
+    width: calc(100vh * 714 / 889); /* Maintain aspect ratio */
+  }
+  </style>
   

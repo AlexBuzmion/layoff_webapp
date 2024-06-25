@@ -14,9 +14,11 @@
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.7",
     "chart.js": "^4.4.1",
+    "echarts": "^5.5.0",
     "pinia": "^2.1.7",
     "veu": "^1.0.1",
     "vue": "^3.3.11",
+    "vue-echarts": "^6.7.3",
     "vue-router": "^4.2.5",
     "vue3-google-login": "^2.0.26",
     "vue3-google-oauth2": "^1.0.7"

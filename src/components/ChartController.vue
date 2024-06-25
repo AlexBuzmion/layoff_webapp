@@ -22,22 +22,24 @@
         <div>
           <table class="styled-table">
             <thead>
-              <tr v-if="selectedPlayerID === '' || selectedSessionID === ''">
-                <th>Sessions</th>
-                <th>Play Time Ave.</th>
-                <th>Deaths</th>
-                <th>Kills</th>
-                <th>Trap Set</th>
-              </tr>
-              <tr v-else-if="selectedSessionID">
-                <th>Session ID</th>
-                <th>Time Played</th>
-                <th>Wins</th>
-                <th>Losses</th>
-                <th>Deaths</th>
-                <th>Kills</th>
-                <th>Trap Set</th>
-              </tr>
+                <h3 v-if="selectedPlayerID === '' || selectedSessionID === ''">Average</h3>
+                <h3 v-else-if="selectedSessionID">Cummulative</h3>
+                <tr v-if="selectedPlayerID === '' || selectedSessionID === ''">
+                    <th>Sessions</th>
+                    <th>Play Time</th>
+                    <th>Deaths</th>
+                    <th>Kills</th>
+                    <th>Trap Set</th>
+                </tr>
+                <tr v-else-if="selectedSessionID">
+                    <th>Session ID</th>
+                    <th>Time Played</th>
+                    <th>Wins</th>
+                    <th>Losses</th>
+                    <th>Deaths</th>
+                    <th>Kills</th>
+                    <th>Trap Set</th>
+                </tr>
             </thead>
             <tbody>
               <tr v-if="selectedPlayerID === '' || selectedSessionID === ''">
