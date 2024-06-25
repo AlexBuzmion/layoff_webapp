@@ -98,11 +98,18 @@
         type: 'value'
       },
       series: seriesData,
+      legend: {
+        data: Object.keys(actionMap),
+        selected: Object.keys(actionMap).reduce((acc, action) => {
+          acc[action] = true;
+          return acc;
+        }, {})
+      },
       graphic: {
         type: 'image',
         z: -1,
         style: {
-          image: '/src/assets/LayOffMap.png',
+          image: '/LayOffMap.png',
           width: 714,
           height: 889
         },
@@ -124,6 +131,7 @@
   watch(() => [cloudSaveData.selectedPID, cloudSaveData.selectedSID, displayData], () => {
     updateChartOptions();
   }, { immediate: true });
+  
   </script>
   
   <style scoped>
