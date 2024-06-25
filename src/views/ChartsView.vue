@@ -2,14 +2,15 @@
     
     <div class="">
       <ChartController class=""></ChartController>
+      <ScatterChart></ScatterChart>
     </div>
     
 
 </template>
     
 <script setup>
-  import {computed} from 'vue'
   import ChartController from '@/components/ChartController.vue';
+  import ScatterChart from '@/components/ScatterChart.vue';
 </script>
 
 <style scoped>

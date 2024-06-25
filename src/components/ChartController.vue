@@ -1,169 +1,316 @@
 <template>
-    
     <section class="wrapper">
-        <h5>Filters</h5>
-        <div class="flexbox item">
-
-            <form class="sample-form" @submit.prevent="handleSubmit">
-                <label for="player-info" class="spacer  ">Player:
-                    <select id="player-info" v-model="selectedPlayerID" 
-                    @change="cloudSaveData.SetSelectedPID(selectedPlayerID)">
-                        <option selected value=''>All Players</option> 
-                        <option v-for="player in cloudSaveData.playerList" 
-                        :key="player.id" :value="player.id">{{ player.id }}</option>
-                    </select>
-                </label>
-                <label v-if="selectedPlayerID!=''" for="session-info" class="spacer">Session:
-                    <select id="session-info" v-model="selectedSessionID" @change="cloudSaveData.SetSelectedSID(selectedSessionID)">
-                        <option selected value=''>All Sessions...</option>
-                        <option v-for="session in sessionOptions" :key="session" :value="session">{{ session }}</option>
-                    </select>
-                </label><br/>
-                
-                <label for="PID" class="spacer">PlayerID:
-                    <input disabled id="PID" v-model="selectedPlayerID">
-                </label><br/>
-            </form> 
-                <div>
-                    <table class="styled-table">
-                        <thead>
-                            <tr>
-                                <th v-if="selectedPlayerID === '' || selectedSessionID === ''">Sessions</th>
-                                <th v-else>Session ID</th>
-                                <th v-if="selectedSessionID === '' ">Ave. Time<br/> per Round</th>
-                                <th v-else>Time Played</th>
-                                <th>Wins</th>
-                                <th>Losses</th>
-                                <th>Deaths</th>
-                                <th>Death By Enemy</th>
-                                <th>Death By Self</th>
-                                <th>Room Death <br/>(Kill Protocol)</th>
-                                <th>Kills</th>
-                                <th>Trap Set</th>
-                                <th>Trap Kills</th>
-                                <th>Traps Triggered</th>
-                                <th>Traps Avoided</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-if="selectedPlayerID === '' || selectedSessionID === ''">
-                                <td>{{ selectedSessionID || displayData.sessions }}</td>
-                                <td>{{ displayData.averageTime }}s</td>
-                                <td>{{ displayData.wins }}</td>
-                                <td>{{ displayData.losses }}</td>
-                                <td>{{ displayData.deaths }}</td>
-                                <td>{{ displayData.deathbyEnemy }}</td>
-                                <td>{{ displayData.deathbySelf }}</td>
-                                <td>{{ displayData.roomDeaths }}</td>
-                                <td>{{ displayData.kills }}</td>
-                                <td>{{ displayData.trapsSet }}</td>
-                                <td>{{ displayData.trapKills }}</td>
-                                <td>{{ displayData.trapsTriggered }}</td>
-                                <td>{{ displayData.trapsAvoided}}</td>
-                            </tr>
-                            <tr v-else-if="selectedSessionID"></tr>
-                                <td>{{ selectedSessionID }}</td>
-                                <td>{{ displayData.TimePlayed }}</td>
-                                <td>{{ displayData.Wins }}</td>
-                                <td>{{ displayData.Losses }}</td>
-                                <td>{{ displayData.Deaths }}</td>
-                                <td>{{ displayData.DeathbyEnemyTrap }}</td>
-                                <td>{{ displayData.DeathbyOwnTrap }}</td>
-                                <td>{{ displayData.DeathbyRoom }}</td>
-                                <td>{{ displayData.Kills }}</td>
-                                <td>{{ displayData.TrapsSet }}</td>
-                                <td>{{ displayData.TrapKills }}</td>
-                                <td>{{ displayData.TrapsTriggered }}</td>
-                                <td>{{ displayData.TrapsAvoided }}</td>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div>
-                    <table class="styled-table">
-                        <thead>
-                            <tr class="vertical">
-                                <th><img src="/src/assets/BouncingBetty.png" class="trap-icon"></th>
-                                <th><img src="/src/assets/DoomPuff.png" class="trap-icon"></th>
-                                <th><img src="/src/assets/Frame 5PoisonDart (1).png" class="trap-icon"></th>
-                                <th><img src="/src/assets/SkyfallSnare.png" class="trap-icon"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>138</td>
-                                <td>67</td>
-                                <td>136</td>
-                                <td>111</td>
-                            </tr>
-                        </tbody>
-                            
-                    </table>
-                </div>
-            
-
+      <h5>Filters</h5>
+      <div class="flexbox item">
+        <form class="sample-form" @submit.prevent="handleSubmit">
+          <label for="player-info" class="spacer">Player:
+            <select id="player-info" v-model="selectedPlayerID" @change="cloudSaveData.SetSelectedPID(selectedPlayerID)">
+              <option selected value=''>All Players</option>
+              <option v-for="player in cloudSaveData.playerList" :key="player.id" :value="player.id">{{ player.id }}</option>
+            </select>
+          </label>
+          <label v-if="selectedPlayerID != ''" for="session-info" class="spacer">Session:
+            <select id="session-info" v-model="selectedSessionID" @change="cloudSaveData.SetSelectedSID(selectedSessionID)">
+              <option selected value=''>All Sessions...</option>
+              <option v-for="session in sessionOptions" :key="session" :value="session">{{ session }}</option>
+            </select>
+          </label><br />
+          <label for="PID" class="spacer">PlayerID:
+            <input disabled id="PID" v-model="selectedPlayerID">
+          </label><br />
+        </form>
+        <div>
+          <table class="styled-table">
+            <thead>
+              <tr v-if="selectedPlayerID === '' || selectedSessionID === ''">
+                <th>Sessions</th>
+                <th>Play Time Ave.</th>
+                <th>Deaths</th>
+                <th>Kills</th>
+                <th>Trap Set</th>
+              </tr>
+              <tr v-else-if="selectedSessionID">
+                <th>Session ID</th>
+                <th>Time Played</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Deaths</th>
+                <th>Kills</th>
+                <th>Trap Set</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="selectedPlayerID === '' || selectedSessionID === ''">
+                <td>{{ selectedSessionID || displayData.sessions }}</td>
+                <td>{{ displayData.averageTime }}s</td>
+                <td>{{ displayData.deaths }}</td>
+                <td>{{ displayData.kills }}</td>
+                <td>{{ displayData.trapsSet }}</td>
+              </tr>
+              <tr v-else-if="selectedSessionID">
+                <td>{{ selectedSessionID }}</td>
+                <td>{{ displayData.TimePlayed }}</td>
+                <td>{{ displayData.Wins }}</td>
+                <td>{{ displayData.Losses }}</td>
+                <td>{{ displayData.Deaths }}</td>
+                <td>{{ displayData.Kills }}</td>
+                <td>{{ displayData.TrapsSet }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-
+        <div>
+            <div>
+          <h3>Player Actions</h3>
+          <table class="styled-table">
+            <thead>
+              <tr class="vertical">
+                <th>Dashed</th>
+                <th>Crouched</th>
+                <th>Shoved</th>
+                <th>Time of First Dash</th>
+                <th>Time of First Crouch</th>
+                <th>Time of First Shove</th>
+                <th>Time of First Trap Set</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ displayData.timesDashed }}</td>
+                <td>{{ displayData.timesCrouched }}</td>
+                <td>{{ displayData.timesShoved }}</td>
+                <td>{{ displayData.timeOfFirstDash }}s</td>
+                <td>{{ displayData.timeOfFirstCrouch }}s</td>
+                <td>{{ displayData.timeOfFirstShove }}s</td>
+                <td>{{ displayData.timeOfFirstTrapSet }}s</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+          <h3>Keycard Stats</h3>
+          <h5>Time of</h5>
+          <table class="styled-table">
+            <thead>
+              <tr class="vertical">
+                <th>1st Card Collected</th>
+                <th>2nd Card Collected</th>
+                <th>3rd Card Collected</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="selectedPlayerID === '' || selectedSessionID === ''">
+                <td>{{ displayData.timeFirstKeyCollected }}s</td>
+                <td>{{ displayData.timeSecondKeyCollected }}s</td>
+                <td>{{ displayData.timeThirdKeyCollected }}s</td>
+              </tr>
+              <tr v-else-if="selectedSessionID">
+                <td>{{ displayData.timeFirstKeyCollected }}s</td>
+                <td>{{ displayData.timeSecondKeyCollected }}s</td>
+                <td>{{ displayData.timeThirdKeyCollected }}s</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h3>Deaths</h3>
+          <h5>By Cause</h5>
+          <table class="styled-table">
+            <thead>
+              <tr class="vertical">
+                <th v-if="displayData.player === 1">Self</th>
+                <th v-else>Player 1</th>
+                <th v-if="displayData.player === 2">Self</th>
+                <th v-else>Player 2</th>
+                <th v-if="displayData.player === 3">Self</th>
+                <th v-else>Player 3</th>
+                <th v-if="displayData.player === 4">Self</th>
+                <th v-else>Player 4</th>
+                <th>Environment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="selectedPlayerID === '' || selectedSessionID === ''">
+                <td>{{ displayData.totalsByPlayerKills?.Player1 || 0 }}</td>
+                <td>{{ displayData.totalsByPlayerKills?.Player2 || 0 }}</td>
+                <td>{{ displayData.totalsByPlayerKills?.Player3 || 0 }}</td>
+                <td>{{ displayData.totalsByPlayerKills?.Player4 || 0 }}</td>
+                <td>{{ displayData.totalsByPlayerKills?.Environment || 0 }}</td>
+              </tr>
+              <tr v-else-if="selectedSessionID">
+                <td>{{ displayData.totalsByPlayerKills?.Player1 || 0 }}</td>
+                <td>{{ displayData.totalsByPlayerKills?.Player2 || 0 }}</td>
+                <td>{{ displayData.totalsByPlayerKills?.Player3 || 0 }}</td>
+                <td>{{ displayData.totalsByPlayerKills?.Player4 || 0 }}</td>
+                <td>{{ displayData.totalsByPlayerKills?.Environment || 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h3>Trap Stats</h3>
+          <table class="styled-table">
+            <thead>
+              <tr class="vertical">
+                <th>Poison Dart</th>
+                <th>Bouncing Betty</th>
+                <th>Ceiling Trap</th>
+                <th>Doom Puff</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ displayData.trapsSetByType?.Trap1 || 0 }}</td>
+                <td>{{ displayData.trapsSetByType?.Trap2 || 0 }}</td>
+                <td>{{ displayData.trapsSetByType?.Trap3 || 0 }}</td>
+                <td>{{ displayData.trapsSetByType?.Trap4 || 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
-
-</template>
+  </template>
 
 <script setup>
-    import { ref, computed, onMounted } from 'vue'
-    import { useCloudSaveStore } from '@/stores/cloudSaveData';
-    const cloudSaveData = useCloudSaveStore();
-    
-    async function retrieveAllPlayerData() {
-      await cloudSaveData.FetchAllPlayerData();
+import { ref, computed, onMounted, watch } from 'vue';
+import { useCloudSaveStore } from '@/stores/cloudSaveData';
+
+const cloudSaveData = useCloudSaveStore();
+
+async function retrieveAllPlayerData() {
+  await cloudSaveData.FetchAllPlayerData();
+}
+
+async function retrievePlayerList() {
+  try {
+    await cloudSaveData.FetchPlayerList();
+  } catch (error) {
+    //console.log('Error retrieving player list', error);
+  }
+}
+
+onMounted(async () => {
+  await retrievePlayerList();
+  await retrieveAllPlayerData();
+  cloudSaveData.GetAggregateData();
+});
+
+const selectedPlayerID = computed({
+  get: () => cloudSaveData.selectedPID || '',
+  set: (valueX) => {
+    cloudSaveData.SetSelectedPID(valueX);
+    resetSessionID();
+  }
+});
+
+const selectedSessionID = computed({
+  get: () => cloudSaveData.selectedSID || '',
+  set: (valueX) => {
+    cloudSaveData.SetSelectedSID(valueX);
+  }
+});
+
+const sessionOptions = computed(() => {
+  if (!selectedPlayerID.value) return [];
+  return Object.keys(cloudSaveData.playerData[selectedPlayerID.value] || {});
+});
+
+const displayData = computed(() => {
+  let data = {};
+  if (!selectedPlayerID.value) {
+    data = cloudSaveData.GetAggregateData();
+  } else if (selectedPlayerID.value && !selectedSessionID.value) {
+    data = cloudSaveData.GetPlayerAggregateData(selectedPlayerID.value);
+  } else {
+    data = cloudSaveData.GetSessionData(selectedPlayerID.value, selectedSessionID.value);
+  }
+
+  if (data.KillsByTrap) {
+    data.totalKillsByTrap = calculateTotalByType(data.KillsByTrap);
+    data.totalsByPlayerKills = calculateTotalsByPlayer(data.KillsByTrap);
+  }
+
+  if (data.DeathsByCause) {
+    data.totalDeathsByCause = calculateTotalByType(data.DeathsByCause);
+    data.totalsByPlayerDeaths = calculateTotalsByPlayer(data.DeathsByCause);
+  }
+
+  // Adding new data calculations for PlayerActions and TrapsSetByType
+  if (data.PlayerActions) {
+    data.timesDashed = calculateTotalActions(data.PlayerActions, 'Dash');
+    data.timesCrouched = calculateTotalActions(data.PlayerActions, 'Crouch');
+    data.timesInteracted = calculateTotalActions(data.PlayerActions, 'Interacted');
+    data.timesShoved = calculateTotalActions(data.PlayerActions, 'Shove');
+    data.timesJumped = calculateTotalActions(data.PlayerActions, 'Jump');
+
+    data.timeOfFirstDash = calculateFirstActionTime(data.PlayerActions, 'Dash');
+    data.timeOfFirstCrouch = calculateFirstActionTime(data.PlayerActions, 'Crouch');
+    data.timeOfFirstShove = calculateFirstActionTime(data.PlayerActions, 'Shove');
+    data.timeOfFirstTrapSet = calculateFirstActionTime(data.PlayerActions, 'TrapSet');
+  }
+
+  if (data.TrapsSetByType) {
+    data.trapsSetByType = data.TrapsSetByType;
+  }
+
+  return data;
+});
+
+function calculateTotalByType(dataByType) {
+  let total = 0;
+  for (let key in dataByType) {
+    if (typeof dataByType[key] === 'object') {
+      for (let type in dataByType[key]) {
+        total += dataByType[key][type];
+      }
+    } else {
+      total += dataByType[key];
     }
+  }
+  return total;
+}
 
-    async function retrievePlayerList(){
-        try {
-            await cloudSaveData.FetchPlayerList();
+function calculateTotalsByPlayer(dataByType) {
+  let totalsByPlayer = {};
+  for (let key in dataByType) {
+    if (typeof dataByType[key] === 'object') {
+      for (let type in dataByType[key]) {
+        if (!totalsByPlayer[key]) {
+          totalsByPlayer[key] = 0;
         }
-        catch (error) {
-            console.log('Error retrieving player list', error)
-        }
+        totalsByPlayer[key] += dataByType[key][type];
+      }
+    } else {
+      if (!totalsByPlayer['Environment']) {
+        totalsByPlayer['Environment'] = 0;
+      }
+      totalsByPlayer['Environment'] += dataByType[key];
     }
+  }
+  return totalsByPlayer;
+}
 
-    // Fetch player list on component mount 
-    onMounted(async () => {
-        await retrievePlayerList();
-        await retrieveAllPlayerData();
-        cloudSaveData.GetAggregateData();
-    })
-    // update selected PID in cloudSaveData pinia store
-    const selectedPlayerID = computed({
-        get: () => cloudSaveData.selectedPID|| '',
-        set: (valueX) => {
-            cloudSaveData.SetSelectedPID(valueX)
-        }
-    })
+function calculateTotalActions(actions, actionType) {
+  return actions.filter(action => action.Action === actionType).length;
+}
 
-    const selectedSessionID = computed({
-        get: () => cloudSaveData.selectedSID|| '',
-        set: (valueX) => {
-            cloudSaveData.SetSelectedSID(valueX)
-        }
-    })
+function calculateFirstActionTime(actions, actionType) {
+  const action = actions.find(action => action.Action === actionType);
+  return action ? action.Time : 0;
+}
 
-    const sessionOptions = computed(() => {
-        if (!selectedPlayerID.value) return [];
-        return Object.keys(cloudSaveData.playerData[selectedPlayerID.value] || {});
-    })
-    
-    const displayData = computed(() => {
-        if (!selectedPlayerID.value) {
-            return cloudSaveData.GetAggregateData(); // gets aggregate data for all players
-        } else if (selectedPlayerID.value && !selectedSessionID.value) {
-            return cloudSaveData.GetPlayerAggregateData(selectedPlayerID.value); // gets aggregate for one player
-        } else {
-            return cloudSaveData.GetSessionData(selectedPlayerID.value, selectedSessionID.value); // data for a specific session
-        }
-    })
-    
+function resetSessionID() {
+  cloudSaveData.SetSelectedSID('');
+}
+
+watch(selectedPlayerID, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    resetSessionID();
+  }
+});
 </script>
+
+
 
 <style scoped>
 .submit {

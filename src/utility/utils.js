@@ -18,7 +18,7 @@ export function convCSToDict(resultsArray) {
     // takes the key value pair and stores it in the dictionary
     statsDictionary[item.key] = item.value
   })
-  console.log(statsDictionary)
+  // console.log(statsDictionary)
   return statsDictionary
 }
 

@@ -25,7 +25,7 @@ const router = createRouter({
       path: '/charts',
       name: 'Charts',
       component: ChartsViewVue,
-      meta : {requiresAuth: true}
+      meta : {requiresAuth: false}
     },
     {
       path: '/remote-config',
