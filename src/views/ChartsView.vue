@@ -2,7 +2,7 @@
     
     <div class="">
       <ChartController class=""></ChartController>
-      <ScatterChart></ScatterChart>
+      <ScatterChart style="margin-bottom: 50px;"></ScatterChart>
     </div>
     
 
