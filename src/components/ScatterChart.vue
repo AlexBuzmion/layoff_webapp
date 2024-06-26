@@ -5,10 +5,16 @@
         <button class="button" @click="deselectAll">Deselect All</button>
       </nav>
       <div>
+        <label for="show-all-actions">
+          <input type="checkbox" id="show-all-actions" v-model="showAllActions" @change="updateChartOptions" />
+          Show All Actions (0:00 - 10:00)
+        </label>
+      </div>
+      <div>
         <label for="time-slider">Time (minutes): </label>
-        <input type="range" id="time-slider" v-model="selectedTimeRange" min="0" max="10" @input="updateChartOptions" />
-        <span v-if="selectedTimeRange === 0">All actions (0:00 - 10:00)</span>
-        <span v-else>{{ selectedTimeRange }}:00 - {{ selectedTimeRange + 1 }}:00</span>
+        <input type="range" id="time-slider" v-model="selectedTimeRange" min="0" max="10" @input="updateChartOptions" :disabled="showAllActions" />
+        <span v-if="showAllActions">All actions (0:00 - 10:00)</span>
+        <span v-else>{{ selectedTimeRange }}:00 - {{ selectedTimeRange }}:59</span>
       </div>
       <v-chart :option="chartOptions" />
     </div>
@@ -56,6 +62,7 @@
   
   const chartOptions = ref({});
   const selectedTimeRange = ref(0);
+  const showAllActions = ref(false);
   
   const actionColorMap = {
     Died: 'red',
@@ -89,14 +96,12 @@
   
   const updateChartOptions = () => {
     const actionMap = {};
-    const startTime = (selectedTimeRange.value - 1) * 60;
-    const endTime = selectedTimeRange.value * 60;
+    const startTime = showAllActions.value ? 0 : (selectedTimeRange.value - 1) * 60;
+    const endTime = showAllActions.value ? 600 : selectedTimeRange.value * 60;
+  
     if (displayData.value.PlayerActions) {
       displayData.value.PlayerActions.forEach(action => {
-        if (
-          selectedTimeRange.value === 0 ||
-          (action.Time >= startTime && action.Time < endTime)
-        ) {
+        if (action.Time >= startTime && action.Time < endTime) {
           if (!actionMap[action.Action]) {
             actionMap[action.Action] = [];
           }
@@ -191,7 +196,7 @@
     };
   };
   
-  watch(() => [cloudSaveData.selectedPID, cloudSaveData.selectedSID, displayData, selectedTimeRange], () => {
+  watch(() => [cloudSaveData.selectedPID, cloudSaveData.selectedSID, displayData, selectedTimeRange, showAllActions], () => {
     updateChartOptions();
   }, { immediate: true });
   </script>

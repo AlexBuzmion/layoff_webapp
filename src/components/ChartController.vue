@@ -1,8 +1,8 @@
 <template>
     <section class="wrapper">
-      <h5>Filters</h5>
-      <div class="flexbox item">
-        <form v-if="!isLoading" class="sample-form" @submit.prevent="handleSubmit">
+        <div class="flexbox item">
+            <form v-if="!isLoading" class="sample-form" @submit.prevent="applyFilters">
+            <h5>Filters</h5>
           <label for="player-info" class="spacer">Player:
             <select id="player-info" v-model="selectedPlayerID" @change="cloudSaveData.SetSelectedPID(selectedPlayerID)">
               <option selected value=''>All Players</option>
@@ -18,7 +18,7 @@
           <label for="PID" class="spacer">PlayerID:
             <input disabled id="PID" v-model="selectedPlayerID">
           </label><br />
-          <label for="time-info" class="spacer">Time:
+          <!-- <label for="time-info" class="spacer">Time:
             <input type="time" id="time-info" v-model="selectedTime">
           </label>
           <label for="date-info" class="spacer">Date:
@@ -26,8 +26,10 @@
           </label>
           <label for="room-info" class="spacer">Room Name:
             <input type="text" id="room-info" v-model="selectedRoomName">
-          </label><br />
-          <button type="submit">Filter</button>
+          </label><br /> 
+          <nav class="nav-button">
+              <button type="submit" class="button">Filter</button>
+          </nav>-->
         </form>
         <form v-else>
             <h1 style="text-align: center;">Firing all employees. . .</h1>
@@ -190,8 +192,8 @@
       </div>
     </section>
   </template>
-  
-  <script setup>
+
+<script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useCloudSaveStore } from '@/stores/cloudSaveData';
 
@@ -282,7 +284,32 @@ function filterByDate(data, date) {
 
 function filterByRoomName(data, roomName) {
   // Implement the logic to filter data by room name
-  return data;
+  if (!data.sessions) {
+    // No data available to filter
+    return data;
+  }
+
+  let filteredData = { ...data };
+  filteredData.sessions = 0;
+  filteredData.PlayerActions = [];
+  filteredData.roomNames = data.roomNames.filter(name => name === roomName);
+
+  for (let sessionKey in data) {
+    if (data[sessionKey].RoomName === roomName) {
+      filteredData.sessions += 1;
+      for (let key in data[sessionKey]) {
+        if (key !== 'PlayerActions' && key !== 'RoomName') {
+          if (typeof filteredData[key] === 'number') {
+            filteredData[key] += data[sessionKey][key];
+          }
+        } else if (key === 'PlayerActions') {
+          filteredData[key] = filteredData[key].concat(data[sessionKey][key]);
+        }
+      }
+    }
+  }
+
+  return filteredData;
 }
 
 watch(selectedPlayerID, (newVal, oldVal) => {
@@ -292,27 +319,27 @@ watch(selectedPlayerID, (newVal, oldVal) => {
 });
 </script>
 
-  
-  <style scoped>
+
+<style scoped>
   .submit {
     width: 100px;
     height: 25px;
     margin-left: 20px;
     text-align: center;
   }
-  
+
   .spacer {
     font-size: 15px;
     padding-left: 10px;
   }
-  
+
   *:disabled {
     background-color: rgb(124, 124, 124);
     color: linen;
     opacity: 1;
     width: fit-content;
   }
-  
+
   .styled-table {
     border-collapse: collapse;
     margin: 25px 0;
@@ -321,40 +348,40 @@ watch(selectedPlayerID, (newVal, oldVal) => {
     min-width: 400px;
     box-shadow: 0 0 20px rgba(63, 63, 63, 0.15);
   }
-  
+
   .styled-table thead tr {
     background-color: #e47900;
     color: #ffffff;
     text-align: left;
   }
-  
+
   .styled-table th,
   .styled-table td {
     padding: 12px 15px;
   }
-  
+
   .styled-table tbody tr {
     border-bottom: 1px solid #dddddd;
   }
-  
+
   .styled-table tbody tr:nth-of-type(even) {
     background-color: #242424;
   }
-  
+
   .styled-table tbody tr:last-of-type {
     border-bottom: 2px solid #e47900;
   }
-  
+
   .styled-table tbody tr.active-row {
     font-weight: bold;
     color: #d6801e;
   }
-  
+
   .trap-icon {
     align-content: center;
     width: 50px;
   }
-  
+
   .nav-button button {
     margin-left: 10px;
     margin-top: 25px;
@@ -371,15 +398,14 @@ watch(selectedPlayerID, (newVal, oldVal) => {
     border-radius: 15px;
     box-shadow: 0 9px #363636;
   }
-  
+
   .button:hover {
     background-color: #dd8430;
   }
-  
+
   .button:active {
     background-color: #dd8430;
     box-shadow: 0 5px #666;
     transform: translateY(4px);
   }
-  </style>
-  
+</style>
