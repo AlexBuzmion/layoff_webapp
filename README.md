@@ -1,9 +1,7 @@
-PG25AlexB_Pipelines_A3
 04-16-2024
 Alex Buzmion II
 
 ## Links:
-[github repo branch develop link](<https://github.com/AlexBuzmion/alexbuzmion.github.io>) (For testing/grading please use the `develop` branch as that skips login)
 [live website](<https://namesarehard.ca>) - This is from the main branch
 
 ## Release Notes
@@ -20,10 +18,4 @@ Alex Buzmion II
     - unityServices.js
     - remoteConfigData.js 
     - RemoteConfigurations.vue
-    
-## How to test 
-- download the repo
-- pull develop branch
-- debug and inspect the API authenticate call, validate the environment data from unity being displayed in the dropdown for environments.
-- data for environment configurations are pulled but not displayed anywhere (i.e. PlayerSettings, DebugEnabled, ConfigVersion
-    - validate this by going to the chrome inspector -> Vue -> Pinia store to view the config settings pulled from Unity. 
+    - ChartsView.vue
